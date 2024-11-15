@@ -1,0 +1,54 @@
+
+
+
+DROP PROCEDURE IF EXISTS SP_EstadoOrden_Select;
+GO
+
+
+
+CREATE PROCEDURE SP_EstadoOrden_Select
+    @nombre VARCHAR(45) = NULL,
+    @descripcion VARCHAR(255) = NULL
+AS
+BEGIN
+
+    DECLARE @mensajeSalida VARCHAR(255);
+    DECLARE @idMensajeSalida INT;
+
+    BEGIN TRY
+        
+        SELECT idEstadoOrden, nombre, descripcion
+        FROM EstadoOrden
+        WHERE (@nombre IS NULL OR nombre LIKE '%' + @nombre + '%')
+          AND (@descripcion IS NULL OR descripcion LIKE '%' + @descripcion + '%');
+
+        SET @mensajeSalida = 'Consulta realizada exitosamente.';
+        SET @idMensajeSalida = 0;
+
+        -- mensaje de salida
+        SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código;
+
+    END TRY
+    BEGIN CATCH
+        DECLARE @mensajeError VARCHAR(500);
+        SET @mensajeError = ERROR_MESSAGE();
+
+        -- mensaje de error
+        SELECT @mensajeError AS Mensaje, -1 AS Código;
+    END CATCH;
+
+END;
+GO
+
+
+
+/*
+
+EXEC SP_EstadoOrden_Select
+    '',
+    ''
+
+SELECT * FROM EstadoOrden
+
+
+*/

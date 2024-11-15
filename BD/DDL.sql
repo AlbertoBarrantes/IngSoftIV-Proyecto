@@ -36,7 +36,7 @@ CREATE TABLE Producto (
 	unidadMedida VARCHAR(45) NOT NULL,
 	peso DECIMAL(10,2) NOT NULL,
 	dimension VARCHAR(45) NOT NULL,
-	numeroLote VARCHAR(45) NOT NULL UNIQUE,
+	numeroLote VARCHAR(45) NOT NULL,
 	stock INT NOT NULL DEFAULT 0
 );
 

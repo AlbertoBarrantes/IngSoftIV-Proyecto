@@ -1,7 +1,10 @@
 
 
+
 DROP PROCEDURE IF EXISTS SP_Producto_Select;
 GO
+
+
 
 CREATE PROCEDURE SP_Producto_Select
     @codigoBarras VARCHAR(45) = NULL,
@@ -45,7 +48,6 @@ BEGIN
     END CATCH;
 END;
 GO
-
 
 
 

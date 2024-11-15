@@ -1,7 +1,10 @@
 
 
+
 DROP PROCEDURE IF EXISTS SP_Producto_Update;
 GO
+
+
 
 CREATE PROCEDURE SP_Producto_Update
     @idProducto INT,
@@ -48,11 +51,14 @@ BEGIN
 
 		SELECT @mensajeError AS mensaje, -1 AS codigo;
 	END CATCH
+
+    RETURN @idMensajeSalida;
 END;
 GO
 
 
 /*
+
 EXEC SP_Producto_Update
 	@idProducto = 2,
     @codigoBarras = '7501001234567',
@@ -63,7 +69,8 @@ EXEC SP_Producto_Update
     @numeroLote = 'A12345',
     @stock = 100;
 
-	SELECT * FROM Producto;
+SELECT * FROM Producto;
+
 */
 	
 

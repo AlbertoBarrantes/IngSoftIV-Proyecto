@@ -6,7 +6,7 @@ GO
 
 
 
--- Inserts para Producto
+-- Inserts para xProducto
 INSERT INTO Producto (codigoBarras, descripcion, unidadMedida, peso, dimension, numeroLote, stock)
 VALUES 
     ('7501001234567', 'Coca Cola 600ml', 'ml', 600.00, '20x10x5 cm', 'A12345', 100),
@@ -16,7 +16,7 @@ VALUES
 
 
 
--- Inserts para EstadoProducto
+-- Inserts para xEstadoProducto
 INSERT INTO EstadoProducto (nombre, descripcion)
 VALUES 
     ('Defectuoso', 'Producto dañado o incompleto'),
@@ -25,7 +25,7 @@ VALUES
 
 
 
--- Inserts para ProductoDefectuoso
+-- Inserts para xProductoDefectuoso
 INSERT INTO ProductoDefectuoso (estadoProductoID, productoID)
 VALUES 
     (1, 1),  -- Coca Cola marcada como defectuosa
@@ -34,7 +34,7 @@ VALUES
 
 
 
--- Inserts para Devolucion
+-- Inserts para xDevolucion
 INSERT INTO Devolucion (productoID, cantidad, razon)
 VALUES 
     (1, 10, 'Producto dañado durante el transporte'),
@@ -43,7 +43,7 @@ VALUES
 
 
 
--- Inserts para EstadoOrden
+-- Inserts para xEstadoOrden
 INSERT INTO EstadoOrden (nombre, descripcion)
 VALUES 
     ('Pendiente', 'Orden en espera de procesamiento'),
@@ -52,7 +52,7 @@ VALUES
 
 
 
--- Inserts para OrdenSalida
+-- Inserts para xOrdenSalida
 INSERT INTO OrdenSalida (estadoOrdenID, cliente, fechaSalida)
 VALUES 
     (1, 'Supermercado La Central', '2024-11-10'),
@@ -61,7 +61,7 @@ VALUES
 
 
 
--- Inserts para Despacho
+-- Inserts para xDespacho
 INSERT INTO Despacho (productoID, ordenSalidaID, cantidad)
 VALUES 
     (1, 1, 30),  -- Coca Cola para Supermercado La Central
@@ -71,7 +71,7 @@ VALUES
 
 
 
--- Inserts para OrdenCompra
+-- Inserts para xOrdenCompra
 INSERT INTO OrdenCompra (estadoOrdenID, proveedor, fechaOrden)
 VALUES 
     (1, 'Distribuidora Alimentos S.A.', '2024-10-05'),
@@ -80,7 +80,7 @@ VALUES
 
 
 
--- Inserts para Ubicacion
+-- Inserts para xUbicacion
 INSERT INTO Ubicacion (productoID, pasillo, estante)
 VALUES 
     (1, 'A1', 'Estante 3'),
@@ -90,7 +90,7 @@ VALUES
 
 
 
--- Inserts para Recepcion
+-- Inserts para xRecepcion
 INSERT INTO Recepcion (productoID, ordenCompraID, cantidad, fechaRecepcion)
 VALUES 
     (1, 1, 500, '2024-10-07'),
@@ -99,7 +99,7 @@ VALUES
 
 
 
--- Inserts para Almacenamiento
+-- Inserts para xAlmacenamiento
 INSERT INTO Almacenamiento (ubicacionID, recepcionID, cantidadAlmacenada)
 VALUES 
     (1, 1, 300),  -- Coca Cola recibida y almacenada en pasillo A1, Estante 3
