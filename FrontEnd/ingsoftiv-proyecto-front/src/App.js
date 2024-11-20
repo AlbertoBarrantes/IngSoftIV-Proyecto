@@ -1,22 +1,21 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Sidebar/Sidebar';
-import ProductoPage from './pages/ProductoPage';
-import './App.css';
+import React, { useState } from 'react';
+import ProductForm from './components/ProductForm';
+import ProductList from './components/ProductList';
 
-function App() {
+const App = () => {
+  const [products, setProducts] = useState([]);
+
+  const handleAddProduct = (newProduct) => {
+    setProducts((prevProducts) => [...prevProducts, newProduct]);
+  };
+
   return (
-    <div className="app ">
-      <Router>
-        <Sidebar />
-        <div className="content">
-          <Routes>
-            <Route path="/productos" element={<ProductoPage />} />
-          </Routes>
-        </div>
-      </Router>
+    <div style={{ padding: '20px' }}>
+      <h1>Gestión de Inventario</h1>
+      <ProductForm onSubmit={handleAddProduct} />
+      <ProductList products={products} />
     </div>
   );
-}
+};
 
 export default App;
