@@ -44,73 +44,12 @@ CREATE TABLE Producto (
 
 
 
--- xEstado_Producto
-CREATE TABLE EstadoProducto (
-	idEstadoProducto INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	nombre VARCHAR(45) NOT NULL,
-	descripcion VARCHAR (255) NOT NULL
-);
-
-
-
--- xProductoDefectuoso
-CREATE TABLE ProductoDefectuoso (
-	idProductoDefectuoso INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	estadoProductoID INT NOT NULL,
-	productoID INT NOT NULL,
-	FOREIGN KEY (estadoProductoID) REFERENCES EstadoProducto(idEstadoProducto) ON DELETE CASCADE,
-	FOREIGN KEY (productoID) REFERENCES Producto(idProducto) ON DELETE CASCADE
-);
-
-
-
-
-
--- xDevolucion
-CREATE TABLE Devolucion (
-	idDevolucion INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	productoID INT NOT NULL,
-	cantidad INT NOT NULL,
-	razon VARCHAR(255) NOT NULL,
-	FOREIGN KEY (productoID) REFERENCES Producto(idProducto) ON DELETE CASCADE
-);
-
-
-
-
 
 -- xEstadoOrden
 CREATE TABLE EstadoOrden (
 	idEstadoOrden INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	nombre VARCHAR(45) NOT NULL,
 	descripcion VARCHAR(255) NOT NULL
-);
-
-
-
-
-
--- xOrdenSalida
-CREATE TABLE OrdenSalida (
-	idOrdenSalida INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	estadoOrdenID INT NOT NULL,
-	cliente VARCHAR(100) NOT NULL,
-	fechaSalida DATE NOT NULL,
-	FOREIGN KEY (estadoOrdenID) REFERENCES EstadoOrden(idEstadoOrden) ON DELETE CASCADE
-);
-
-
-
-
-
--- xDespacho
-CREATE TABLE Despacho (
-	idDespacho INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	productoID INT NOT NULL,
-	ordenSalidaID INT NOT NULL,
-	cantidad INT NOT NULL,
-	FOREIGN KEY (productoID) REFERENCES Producto(idProducto),
-	FOREIGN KEY (ordenSalidaID) REFERENCES OrdenSalida(idOrdenSalida)
 );
 
 

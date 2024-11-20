@@ -13,6 +13,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Repositorios
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
+builder.Services.AddScoped<IEstadoOrdenRepository, EstadoOrdenRepository>();
+
 
 builder.Services.AddControllers();
 

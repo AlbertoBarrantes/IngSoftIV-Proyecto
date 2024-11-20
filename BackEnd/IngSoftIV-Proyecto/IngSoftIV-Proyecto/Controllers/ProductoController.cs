@@ -21,12 +21,16 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
 
+
+
         // GET: api/Producto
-        [HttpGet]
+        [HttpGet("VerProducto")]
         public async Task<ActionResult<List<Producto>>> ObtenerProductos([FromQuery] string? codigoBarras, [FromQuery] string? descripcion)
         {
+            // Convierte el request en una entidad Producto
             var productos = await _productoRepository.ObtenerProductosFiltrados(codigoBarras, descripcion);
             return Ok(productos);
+
         }
 
 
@@ -37,6 +41,15 @@ namespace IngSoftIV_Proyecto.Controllers
         [HttpPost("InsertarProducto")]
         public async Task<ActionResult<Respuesta>> InsertarProducto([FromBody] ProductoRequest request)
         {
+
+            // Valida los datos usando las anotaciones de la clase ProductoRequest
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+
             // Convierte el request en una entidad Producto
             var producto = new Producto
             {
@@ -60,52 +73,49 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
 
-        //// Método PUT
-        //[HttpPut("{id}")]
-        //public async Task<ActionResult<Respuesta>> ActualizarProducto(int id, [FromBody] ProductoRequest request)
-        //{
-        //    if (id <= 0)
-        //        return BadRequest(new Respuesta { Codigo = -1, Mensaje = "ID inválido" });
+        // Método PUT
+        [HttpPut("ActualizarProducto")]
+        public async Task<ActionResult<Respuesta>> ActualizarProducto(int id, [FromBody] ProductoRequest request)
+        {
 
-        //    var producto = new Producto
-        //    {
-        //        idProducto = id,
-        //        codigoBarras = request.CodigoBarras,
-        //        descripcion = request.Descripcion,
-        //        unidadMedida = request.UnidadMedida,
-        //        peso = request.Peso,
-        //        dimension = request.Dimension,
-        //        numeroLote = request.NumeroLote,
-        //        stock = request.Stock
-        //    };
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    var resultado = await _productoRepository.ActualizarProducto(producto);
-        //    return resultado.Codigo == 0 ? Ok(resultado) : BadRequest(resultado);
-        //}
+            var producto = new Producto
+            {
+                idProducto = id,
+                codigoBarras = request.CodigoBarras,
+                descripcion = request.Descripcion,
+                unidadMedida = request.UnidadMedida,
+                peso = request.Peso,
+                dimension = request.Dimension,
+                numeroLote = request.NumeroLote,
+                stock = request.Stock
+            };
 
+            // Llamada al repositorio para actualizar el producto
+            var respuesta = await _productoRepository.ActualizarProducto(producto);
 
-
-
-
-        // Método DELETE
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<Respuesta>> EliminarProducto(int id)
-        //{
-        //    var resultado = await _productoRepository.EliminarProducto(id);
-        //    return resultado.Codigo == 0 ? Ok(resultado) : BadRequest(resultado);
-        //}
+            // Devuelve el resultado basado en el código de respuesta
+            return respuesta.Codigo == 0 ? Ok(respuesta) : BadRequest(respuesta);
+        }
 
 
 
+        
 
+       // Método DELETE
+       [HttpDelete("EliminarProducto")]
+        public async Task<ActionResult<Respuesta>> EliminarProducto(int id)
+        {
+            // Llamada al repositorio para eliminar el producto
+            var resultado = await _productoRepository.EliminarProducto(id);
 
-
-
-
-
-
-
-
+            // Devuelve el resultado basado en el código de respuesta
+            return resultado.Codigo == 0 ? Ok(resultado) : BadRequest(resultado);
+        }
 
 
     }

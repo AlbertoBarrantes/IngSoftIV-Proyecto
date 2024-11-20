@@ -3,48 +3,45 @@
 DROP PROCEDURE IF EXISTS SP_Producto_Delete;
 GO
 
+
 CREATE PROCEDURE SP_Producto_Delete
-    @idProducto INT
+    @idProducto INT,
+	@mensajeSalida VARCHAR(255) OUTPUT,
+    @idMensajeSalida INT OUTPUT
 AS
 BEGIN
-    -- variables de mensaje de salida
-    DECLARE @mensajeSalida VARCHAR(255);
-    DECLARE @idMensajeSalida INT;
-
     BEGIN TRY
+		BEGIN TRANSACTION;
 
-        -- eliminar producto
+		 -- Validación: Verificar si el producto existe
+        IF NOT EXISTS (SELECT 1 FROM Producto WHERE idProducto = @idProducto)
+        BEGIN
+            SET @mensajeSalida = 'El ID del producto no existe, no se ha eliminado el producto.';
+            SET @idMensajeSalida = 3;
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        -- Eliminar producto
         DELETE FROM Producto
         WHERE idProducto = @idProducto;
 
-        -- revisa si se eliminó
-        IF @@ROWCOUNT > 0
-        BEGIN
-            SET @mensajeSalida = 'Producto eliminado.';
-			SET @idMensajeSalida = 0;
-        END
-        ELSE
-        BEGIN
-            SET @mensajeSalida = 'No se eliminó el producto';
-			SET @idMensajeSalida = 1;
-        END
+        COMMIT TRANSACTION;
 
-        -- mensaje de salida
-        SELECT @mensajeSalida AS mensaje, @idMensajeSalida AS codigo;
+        SET @mensajeSalida = 'Producto eliminado exitosamente.';
+        SET @idMensajeSalida = 0;
 
     END TRY
     BEGIN CATCH
-        -- variable de mensaje de salida
-        DECLARE @mensajeError VARCHAR(500);
-        SET @mensajeError = ERROR_MESSAGE();
-
-        --mensaje de error
-        SELECT @mensajeError AS mensaje, -1 AS codigo;
+        ROLLBACK TRANSACTION;
+		SET @mensajeSalida = ERROR_MESSAGE();
+        SET @idMensajeSalida = -1;
     END CATCH;
 END;
 GO
 
 
 /*
+SELECT * FROM Producto;
 EXEC SP_Producto_Delete 1;
 */

@@ -18,10 +18,10 @@ namespace Negocio.DataAccess.Repositories
         Task<Respuesta> InsertarProducto(Producto producto);
 
         // Actualizar un producto
-        Task ActualizarProducto(Producto producto);
+        Task<Respuesta> ActualizarProducto(Producto producto);
 
         // Eliminar un producto
-        Task EliminarProducto(int idProducto);
+        Task<Respuesta> EliminarProducto(int idProducto);
 
 
 

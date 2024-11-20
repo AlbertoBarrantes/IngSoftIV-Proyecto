@@ -1,56 +1,45 @@
 
 
-
 DROP PROCEDURE IF EXISTS SP_Ubicacion_Delete;
 GO
 
 
-
 CREATE PROCEDURE SP_Ubicacion_Delete
-    @idUbicacion INT
+    @idUbicacion INT,
+	@mensajeSalida VARCHAR(255) OUTPUT,
+    @idMensajeSalida INT OUTPUT
 AS
 BEGIN
-    DECLARE @mensajeSalida VARCHAR(255);
-    DECLARE @idMensajeSalida INT;
-
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        -- Verifica si la ubicación existe en Ubicacion
+        -- Verifica si el id existe en Ubicacion
         IF NOT EXISTS (SELECT 1 FROM Ubicacion WHERE idUbicacion = @idUbicacion)
         BEGIN
             SET @mensajeSalida = 'No se encontró una ubicación con el ID proporcionado, no se ha eliminado ningún registro.';
             SET @idMensajeSalida = 1;
+			ROLLBACK TRANSACTION;
+            RETURN;
         END
-        ELSE
-        BEGIN
-            -- Elimina la ubicación si existe
-            DELETE FROM Ubicacion
-            WHERE idUbicacion = @idUbicacion;
 
-            SET @mensajeSalida = 'La ubicación ha sido eliminada correctamente.';
-            SET @idMensajeSalida = 0;
-        END
+        -- Elimina la ubicación si existe
+        DELETE FROM Ubicacion
+        WHERE idUbicacion = @idUbicacion;
 
         COMMIT TRANSACTION;
 
-        -- Mensaje de salida
-        SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código;
+		SET @mensajeSalida = 'La ubicación ha sido eliminada correctamente.';
+        SET @idMensajeSalida = 0;
 
     END TRY
     BEGIN CATCH
-
         ROLLBACK TRANSACTION;
-
-        DECLARE @mensajeError VARCHAR(500);
-        SET @mensajeError = ERROR_MESSAGE();
-
-        -- Mensaje de error como resultado
-        SELECT @mensajeError AS Mensaje, -1 AS Código;
-
+		SET @mensajeSalida = ERROR_MESSAGE();
+        SET @idMensajeSalida = -1;
     END CATCH;
-
-    RETURN @idMensajeSalida;
-
 END;
 GO
+
+/*
+SELECT * FROM Ubicacion
+*/

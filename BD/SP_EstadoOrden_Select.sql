@@ -16,6 +16,9 @@ BEGIN
     DECLARE @idMensajeSalida INT;
 
     BEGIN TRY
+
+        SET @nombre = NULLIF(@nombre,'');
+        SET @descripcion = NULLIF(@descripcion,'');
         
         SELECT idEstadoOrden, nombre, descripcion
         FROM EstadoOrden

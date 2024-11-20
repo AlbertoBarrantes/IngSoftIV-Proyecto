@@ -1,9 +1,7 @@
 
 
-
 DROP PROCEDURE IF EXISTS SP_Ubicacion_Select;
 GO
-
 
 
 CREATE PROCEDURE SP_Ubicacion_Select
@@ -27,22 +25,24 @@ BEGIN
           AND (@pasillo IS NULL OR pasillo LIKE '%' + @pasillo + '%')
           AND (@estante IS NULL OR estante LIKE '%' + @estante + '%');
 
-        SET @mensajeSalida = 'Consulta realizada exitosamente.';
-        SET @idMensajeSalida = 0;
+		IF @@ROWCOUNT > 0
+		BEGIN
+			SET @mensajeSalida = 'Consulta realizada, se encontraron resultados';
+			SET @idMensajeSalida = 0;
+		END
+		ELSE
+        BEGIN
+            SET @mensajeSalida = 'No se encontraron productos con los filtros indicados';
+            SET @idMensajeSalida = 1;
+        END
 
-        -- Mensaje de salida
         SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código;
 
     END TRY
     BEGIN CATCH
-
-        DECLARE @mensajeError VARCHAR(500);
-        SET @mensajeError = ERROR_MESSAGE();
-
-        -- Mensaje de error
-        SELECT @mensajeError AS Mensaje, -1 AS Código;
-
+		SET @mensajeSalida = ERROR_MESSAGE();
+        SET @idMensajeSalida = -1;
+        SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código;
     END CATCH;
-
 END;
 GO

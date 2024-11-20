@@ -53,4 +53,6 @@ BEGIN
 END;
 GO
 
+/*
 SELECT * FROM Producto
+*/

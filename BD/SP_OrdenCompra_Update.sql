@@ -1,9 +1,7 @@
 
 
-
 DROP PROCEDURE IF EXISTS SP_OrdenCompra_Update;
 GO
-
 
 
 CREATE PROCEDURE SP_OrdenCompra_Update

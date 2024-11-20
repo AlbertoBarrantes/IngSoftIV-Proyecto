@@ -17,12 +17,9 @@ namespace Negocio.DataAccess.Contexts
         // Propiedades
         public DbSet<Producto> Productos { get; set; }
 
+        public DbSet<Ubicacion> Ubicacion { get; set; }
 
-
-
-
-
-
+        public DbSet<EstadoOrden> EstadoOrden { get; set; }
 
     }
 }

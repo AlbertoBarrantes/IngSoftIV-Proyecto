@@ -1,9 +1,7 @@
 
 
-
 DROP PROCEDURE IF EXISTS SP_Producto_Select;
 GO
-
 
 
 CREATE PROCEDURE SP_Producto_Select
@@ -11,7 +9,7 @@ CREATE PROCEDURE SP_Producto_Select
     @descripcion VARCHAR(255) = NULL
 AS
 BEGIN
-    
+
 	DECLARE @mensajeSalida VARCHAR(255);
     DECLARE @idMensajeSalida INT;
 
@@ -20,8 +18,7 @@ BEGIN
 		SET @codigoBarras = NULLIF(@codigoBarras, '');
         SET @descripcion = NULLIF(@descripcion, '');
 
-        SELECT *
-        FROM Producto
+        SELECT * FROM Producto
         WHERE (codigoBarras = @codigoBarras OR @codigoBarras IS NULL)
           AND (descripcion LIKE '%' + @descripcion + '%' OR @descripcion IS NULL);
 
@@ -36,15 +33,13 @@ BEGIN
             SET @idMensajeSalida = 1;
         END
 
-        SELECT @mensajeSalida AS mensaje, @idMensajeSalida AS codigo;
+        SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código;
 
     END TRY
     BEGIN CATCH
-        
-        DECLARE @mensajeError VARCHAR(500);
-        SET @mensajeError = ERROR_MESSAGE();
-
-        SELECT @mensajeError AS mensaje, -1 AS codigo;
+        SET @mensajeSalida = ERROR_MESSAGE();
+        SET @idMensajeSalida = -1;
+        SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código;
     END CATCH;
 END;
 GO
@@ -52,6 +47,8 @@ GO
 
 
 /*
+
+SELECT * FROM Producto
 
 EXEC SP_Producto_Select '',''
 

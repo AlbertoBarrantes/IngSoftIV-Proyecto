@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Negocio.Entities;
 using Microsoft.EntityFrameworkCore;
 using Negocio.DataAccess.Contexts;
 using System.Data;
 using Microsoft.Data.SqlClient;
+using Negocio.Entities;
 using Negocio.DTOs;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Negocio.DataAccess.Repositories
 {
@@ -24,20 +25,22 @@ namespace Negocio.DataAccess.Repositories
         }
 
 
-
+        // XXX cambiar {0} por SQL parameter
 
         // Obtener productos filtrados
         public async Task<List<Producto>> ObtenerProductosFiltrados(string? codigoBarras, string? descripcion)
         {
-            
+
             var query = "EXEC SP_Producto_Select @codigoBarras = {0}, @descripcion = {1}";
 
-            // Si los parámetros son nulos, pasamos DBNull.Value
             return await _context.Productos
                 .FromSqlRaw(query, codigoBarras ?? (object)DBNull.Value, descripcion ?? (object)DBNull.Value)
                 .ToListAsync();
 
         }
+
+
+    
 
 
 
@@ -47,25 +50,33 @@ namespace Negocio.DataAccess.Repositories
         {
             var respuesta = new Respuesta();
 
-            var mensajeSalida = new SqlParameter("@mensajeSalida", SqlDbType.VarChar, 255) { Direction = ParameterDirection.Output };
-            var codigoSalida = new SqlParameter("@idMensajeSalida", SqlDbType.Int) { Direction = ParameterDirection.Output };
+            try { 
 
-            // Ejecuta el SP sin usar catch para errores esperados
-            await _context.Database.ExecuteSqlRawAsync(
-                "EXEC SP_Producto_Insert @codigoBarras = @codigoBarras, @descripcion = @descripcion, @unidadMedida = @unidadMedida, @peso = @peso, @dimension = @dimension, @numeroLote = @numeroLote, @stock = @stock, @mensajeSalida = @mensajeSalida OUTPUT, @idMensajeSalida = @idMensajeSalida OUTPUT",
-                new SqlParameter("@codigoBarras", producto.codigoBarras),
-                new SqlParameter("@descripcion", producto.descripcion),
-                new SqlParameter("@unidadMedida", producto.unidadMedida),
-                new SqlParameter("@peso", producto.peso),
-                new SqlParameter("@dimension", producto.dimension),
-                new SqlParameter("@numeroLote", producto.numeroLote),
-                new SqlParameter("@stock", producto.stock),
-                mensajeSalida,
-                codigoSalida
-            );
+                var mensajeSalida = new SqlParameter("@mensajeSalida", SqlDbType.VarChar, 255) { Direction = ParameterDirection.Output };
+                var codigoSalida = new SqlParameter("@idMensajeSalida", SqlDbType.Int) { Direction = ParameterDirection.Output };
 
-            respuesta.Codigo = (int)codigoSalida.Value;
-            respuesta.Mensaje = mensajeSalida.Value.ToString();
+                // Ejecuta el SP
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC SP_Producto_Insert @codigoBarras = @codigoBarras, @descripcion = @descripcion, @unidadMedida = @unidadMedida, @peso = @peso, @dimension = @dimension, @numeroLote = @numeroLote, @stock = @stock, @mensajeSalida = @mensajeSalida OUTPUT, @idMensajeSalida = @idMensajeSalida OUTPUT",
+                    new SqlParameter("@codigoBarras", producto.codigoBarras),
+                    new SqlParameter("@descripcion", producto.descripcion),
+                    new SqlParameter("@unidadMedida", producto.unidadMedida),
+                    new SqlParameter("@peso", producto.peso),
+                    new SqlParameter("@dimension", producto.dimension),
+                    new SqlParameter("@numeroLote", producto.numeroLote),
+                    new SqlParameter("@stock", producto.stock),
+                    mensajeSalida,
+                    codigoSalida
+                );
+
+                respuesta.Codigo = (int)codigoSalida.Value;
+                respuesta.Mensaje = mensajeSalida.Value.ToString();
+
+            } catch (Exception ex)
+            {
+                respuesta.Codigo = -1;
+                respuesta.Mensaje = $"Error al insertar el producto: {ex.Message}";
+            }
 
             return respuesta;
         }
@@ -78,46 +89,130 @@ namespace Negocio.DataAccess.Repositories
 
 
         // Actualizar un producto en la base de datos
-        public async Task ActualizarProducto(Producto producto)
+        public async Task<Respuesta> ActualizarProducto(Producto producto)
         {
-            await _context.Database.ExecuteSqlRawAsync(
-                "EXEC SP_Producto_Update @idProducto = {0}, @codigoBarras = {1}, @descripcion = {2}, @unidadMedida = {3}, @peso = {4}, @dimension = {5}, @numeroLote = {6}, @stock = {7}",
-                producto.idProducto, producto.codigoBarras, producto.descripcion, producto.unidadMedida, producto.peso, producto.dimension, producto.numeroLote, producto.stock
-            );
+            var respuesta = new Respuesta();
+
+            try
+            {
+                var mensajeSalida = new SqlParameter("@mensajeSalida", SqlDbType.VarChar, 255) { Direction = ParameterDirection.Output };
+                var codigoSalida = new SqlParameter("@idMensajeSalida", SqlDbType.Int) { Direction = ParameterDirection.Output };
+
+                // Ejecuta el SP
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC SP_Producto_Update @idProducto = @idProducto, @codigoBarras = @codigoBarras, @descripcion = @descripcion, @unidadMedida = @unidadMedida, @peso = @peso, @dimension = @dimension, @numeroLote = @numeroLote, @stock = @stock, @mensajeSalida = @mensajeSalida OUTPUT, @idMensajeSalida = @idMensajeSalida OUTPUT",
+                    new SqlParameter("@idProducto", producto.idProducto),
+                    new SqlParameter("@codigoBarras", producto.codigoBarras),
+                    new SqlParameter("@descripcion", producto.descripcion),
+                    new SqlParameter("@unidadMedida", producto.unidadMedida),
+                    new SqlParameter("@peso", producto.peso),
+                    new SqlParameter("@dimension", producto.dimension),
+                    new SqlParameter("@numeroLote", producto.numeroLote),
+                    new SqlParameter("@stock", producto.stock),
+                    mensajeSalida,
+                    codigoSalida
+                );
+
+                respuesta.Codigo = (int)codigoSalida.Value;
+                respuesta.Mensaje = mensajeSalida.Value.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                respuesta.Codigo = -1;
+                respuesta.Mensaje = $"Error al actualizar el producto: {ex.Message}";
+            }
+
+            return respuesta;
+
         }
+
+
+
+
+
+
 
 
         // Eliminar un producto en la base de datos
-        public async Task EliminarProducto(int idProducto)
+        public async Task<Respuesta> EliminarProducto(int idProducto)
         {
-            await _context.Database.ExecuteSqlRawAsync(
-                "EXEC SP_Producto_Delete @idProducto = {0}", idProducto
-            );
+            var respuesta = new Respuesta();
+
+            try
+            {
+
+                var mensajeSalida = new SqlParameter("@mensajeSalida", SqlDbType.VarChar, 255) { Direction = ParameterDirection.Output };
+                var codigoSalida = new SqlParameter("@idMensajeSalida", SqlDbType.Int) { Direction = ParameterDirection.Output };
+
+                // Ejecuta el SP
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC SP_Producto_Delete @idProducto = @idProducto, @mensajeSalida = @mensajeSalida OUTPUT, @idMensajeSalida = @idMensajeSalida OUTPUT",
+                    new SqlParameter("@idProducto", idProducto),
+                    mensajeSalida,
+                    codigoSalida
+                );
+
+                respuesta.Codigo = (int)codigoSalida.Value;
+                respuesta.Mensaje = mensajeSalida.Value.ToString();
+            }
+            catch (Exception ex)
+            {
+                respuesta.Codigo = -1;
+                respuesta.Mensaje = $"Error al eliminar el producto: {ex.Message}";
+            }
+
+            return respuesta;
+
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+// Insertar un producto en la base de datos
+//public async Task<Respuesta> InsertarProducto(Producto producto)
+//{
+//    var respuesta = new Respuesta();
+
+//    try
+//    {
+
+//        var mensajeSalida = new SqlParameter("@mensajeSalida", SqlDbType.VarChar, 255) { Direction = ParameterDirection.Output };
+//        var codigoSalida = new SqlParameter("@idMensajeSalida", SqlDbType.Int) { Direction = ParameterDirection.Output };
+
+//        // Ejecuta el SP
+//        await _context.Database.ExecuteSqlRawAsync(
+//            "EXEC SP_Producto_Insert @codigoBarras = @codigoBarras, @descripcion = @descripcion, @unidadMedida = @unidadMedida, @peso = @peso, @dimension = @dimension, @numeroLote = @numeroLote, @stock = @stock, @mensajeSalida = @mensajeSalida OUTPUT, @idMensajeSalida = @idMensajeSalida OUTPUT",
+//            new SqlParameter("@codigoBarras", producto.codigoBarras),
+//            new SqlParameter("@descripcion", producto.descripcion),
+//            new SqlParameter("@unidadMedida", producto.unidadMedida),
+//            new SqlParameter("@peso", producto.peso),
+//            new SqlParameter("@dimension", producto.dimension),
+//            new SqlParameter("@numeroLote", producto.numeroLote),
+//            new SqlParameter("@stock", producto.stock),
+//            mensajeSalida,
+//            codigoSalida
+//        );
+
+//        respuesta.Codigo = (int)codigoSalida.Value;
+//        respuesta.Mensaje = mensajeSalida.Value.ToString();
+
+//    }
+//    catch (Exception ex)
+//    {
+//        respuesta.Codigo = -1;
+//        respuesta.Mensaje = $"Error al insertar el producto: {ex.Message}";
+//    }
+
+//    return respuesta;
+//}

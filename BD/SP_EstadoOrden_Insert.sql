@@ -1,55 +1,43 @@
 
 
-
 DROP PROCEDURE IF EXISTS SP_EstadoOrden_Insert;
 GO
 
 
-
 CREATE PROCEDURE SP_EstadoOrden_Insert
     @nombre VARCHAR(45),
-    @descripcion VARCHAR(255)
+    @descripcion VARCHAR(255),
+	@mensajeSalida VARCHAR(255) OUT,
+	@idmensajeSalida INT OUT
 AS
 BEGIN
-
-    DECLARE @mensajeSalida VARCHAR(255);
-    DECLARE @idMensajeSalida INT;
-
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        -- Verifica si el nombre ya existe para evitar duplicados
-        IF EXISTS (SELECT nombre FROM EstadoOrden WHERE nombre = @nombre)
+        -- Verifica si el nombre de EstadoOrden ya existe
+        IF EXISTS (SELECT 1 FROM EstadoOrden WHERE nombre = @nombre)
         BEGIN
             SET @mensajeSalida = 'El nombre del estado ya existe, no se ha ingresado un nuevo estado.';
             SET @idMensajeSalida = 1;
+			ROLLBACK TRANSACTION;
+			RETURN;
         END
-        ELSE
-        BEGIN
-            INSERT INTO EstadoOrden (nombre, descripcion)
-            VALUES (@nombre, @descripcion);
-
-            SET @mensajeSalida = 'Se ha ingresado el nuevo estado.';
-            SET @idMensajeSalida = 0;
-        END
-
-        COMMIT TRANSACTION;
-
-		SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código
+        
+		-- Insert        
+        INSERT INTO EstadoOrden (nombre, descripcion)
+        VALUES (@nombre, @descripcion);
+		COMMIT TRANSACTION;
+        SET @mensajeSalida = 'Se ha ingresado el nuevo estado.';
+        SET @idMensajeSalida = 0;
 
     END TRY
     BEGIN CATCH
+
         ROLLBACK TRANSACTION;
-
-        DECLARE @mensajeError VARCHAR(500)
-		SET @mensajeError = ERROR_MESSAGE()
-
-		SELECT @mensajeError AS mensaje, -1 AS codigo
+		SET @mensajeSalida = ERROR_MESSAGE();
+        SET @idMensajeSalida = -1;
     
 	END CATCH;
-
-    RETURN @idMensajeSalida;
-
 END;
 GO
 

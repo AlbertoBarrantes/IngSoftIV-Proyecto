@@ -1,9 +1,7 @@
 
 
-
 DROP PROCEDURE IF EXISTS SP_Producto_Update;
 GO
-
 
 
 CREATE PROCEDURE SP_Producto_Update
@@ -14,47 +12,70 @@ CREATE PROCEDURE SP_Producto_Update
     @peso DECIMAL(10,2),
     @dimension VARCHAR(45),
     @numeroLote VARCHAR(45),
-    @stock INT
+    @stock INT,
+    @mensajeSalida VARCHAR(255) OUTPUT,
+    @idMensajeSalida INT OUTPUT
 AS
 BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
 
-	DECLARE @mensajeSalida VARCHAR(255);
-    DECLARE @idMensajeSalida INT;
-	BEGIN TRY
-
-		UPDATE Producto
-		SET codigoBarras = @codigoBarras,
-			descripcion = @descripcion,
-			unidadMedida = @unidadMedida,
-			peso = @peso,
-			dimension = @dimension,
-			numeroLote = @numeroLote,
-			stock = @stock
-		WHERE idProducto = @idProducto;
-
-		IF @@ROWCOUNT > 0
-		BEGIN
-            SET @mensajeSalida = 'Producto actualizado.';
-            SET @idMensajeSalida = 0;
-        END
-        ELSE
+        -- Validación: El stock no puede ser negativo
+        IF (@stock < 0)
         BEGIN
-            SET @mensajeSalida = 'El producto no fue actualizado';
+            SET @mensajeSalida = 'El stock no puede ser negativo, no se ha actualizado el producto.';
             SET @idMensajeSalida = 1;
+            ROLLBACK TRANSACTION;
+            RETURN;
         END
 
-		SELECT @mensajeSalida AS mensaje, @idMensajeSalida AS codigo;
+        -- Validación: Código de barras duplicado excluyendo el producto actual
+        IF EXISTS (SELECT 1 
+                   FROM Producto 
+                   WHERE codigoBarras = @codigoBarras AND idProducto != @idProducto)
+        BEGIN
+            SET @mensajeSalida = 'El código de barras ya existe en otro producto, no se ha actualizado el producto.';
+            SET @idMensajeSalida = 2;
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        -- Validación: Verificar si el producto existe
+        IF NOT EXISTS (SELECT 1 FROM Producto WHERE idProducto = @idProducto)
+        BEGIN
+            SET @mensajeSalida = 'El ID del producto no existe, no se ha actualizado el producto.';
+            SET @idMensajeSalida = 3;
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        -- Actualizar producto
+        UPDATE Producto
+        SET codigoBarras = @codigoBarras,
+            descripcion = @descripcion,
+            unidadMedida = @unidadMedida,
+            peso = @peso,
+            dimension = @dimension,
+            numeroLote = @numeroLote,
+            stock = @stock
+        WHERE idProducto = @idProducto;
+
+        COMMIT TRANSACTION;
+
+        SET @mensajeSalida = 'Producto actualizado exitosamente.';
+        SET @idMensajeSalida = 0;
+    
 	END TRY
-	BEGIN CATCH
-		DECLARE @mensajeError VARCHAR(500);
-        SET @mensajeError = ERROR_MESSAGE();
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
 
-		SELECT @mensajeError AS mensaje, -1 AS codigo;
-	END CATCH
-
-    RETURN @idMensajeSalida;
+        -- Capturar error del sistema
+        SET @mensajeSalida = ERROR_MESSAGE();
+        SET @idMensajeSalida = -1;
+    END CATCH;
 END;
 GO
+
 
 
 /*

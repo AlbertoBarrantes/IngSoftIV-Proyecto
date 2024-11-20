@@ -16,31 +16,6 @@ VALUES
 
 
 
--- Inserts para xEstadoProducto
-INSERT INTO EstadoProducto (nombre, descripcion)
-VALUES 
-    ('Defectuoso', 'Producto dañado o incompleto'),
-    ('Caducado', 'Producto con fecha de caducidad vencida'),
-    ('Pendiente de Revisión', 'Producto a ser revisado por calidad');
-
-
-
--- Inserts para xProductoDefectuoso
-INSERT INTO ProductoDefectuoso (estadoProductoID, productoID)
-VALUES 
-    (1, 1),  -- Coca Cola marcada como defectuosa
-    (2, 2),  -- Sabritas caducadas
-    (3, 3);  -- Pan Bimbo pendiente de revisión
-
-
-
--- Inserts para xDevolucion
-INSERT INTO Devolucion (productoID, cantidad, razon)
-VALUES 
-    (1, 10, 'Producto dañado durante el transporte'),
-    (2, 5, 'Producto caducado detectado en bodega'),
-    (4, 15, 'Error en pedido');
-
 
 
 -- Inserts para xEstadoOrden
@@ -52,22 +27,6 @@ VALUES
 
 
 
--- Inserts para xOrdenSalida
-INSERT INTO OrdenSalida (estadoOrdenID, cliente, fechaSalida)
-VALUES 
-    (1, 'Supermercado La Central', '2024-11-10'),
-    (2, 'Abarrotes El Buen Precio', '2024-11-12'),
-    (3, 'Minisuper La Esperanza', '2024-11-15');
-
-
-
--- Inserts para xDespacho
-INSERT INTO Despacho (productoID, ordenSalidaID, cantidad)
-VALUES 
-    (1, 1, 30),  -- Coca Cola para Supermercado La Central
-    (2, 1, 20),  -- Sabritas para Supermercado La Central
-    (3, 2, 15),  -- Pan Bimbo para Abarrotes El Buen Precio
-    (4, 3, 50);  -- Leche para Minisuper La Esperanza
 
 
 
