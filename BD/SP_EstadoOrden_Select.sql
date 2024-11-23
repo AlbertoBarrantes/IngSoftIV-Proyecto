@@ -33,13 +33,12 @@ BEGIN
 
     END TRY
     BEGIN CATCH
-        DECLARE @mensajeError VARCHAR(500);
-        SET @mensajeError = ERROR_MESSAGE();
 
-        -- mensaje de error
-        SELECT @mensajeError AS Mensaje, -1 AS Código;
+        SET @mensajeSalida = ERROR_MESSAGE();
+        SET @idMensajeSalida = -1;
+        SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código;
+
     END CATCH;
-
 END;
 GO
 

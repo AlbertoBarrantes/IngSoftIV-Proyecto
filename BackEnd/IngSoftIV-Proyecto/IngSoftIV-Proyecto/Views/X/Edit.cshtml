@@ -1,0 +1,44 @@
+﻿@model Negocio.Entities.OrdenCompra
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>OrdenCompra</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="idOrdenCompra" />
+            <div class="form-group">
+                <label asp-for="estadoOrdenID" class="control-label"></label>
+                <input asp-for="estadoOrdenID" class="form-control" />
+                <span asp-validation-for="estadoOrdenID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="proveedor" class="control-label"></label>
+                <input asp-for="proveedor" class="form-control" />
+                <span asp-validation-for="proveedor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="fechaOrden" class="control-label"></label>
+                <input asp-for="fechaOrden" class="form-control" />
+                <span asp-validation-for="fechaOrden" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

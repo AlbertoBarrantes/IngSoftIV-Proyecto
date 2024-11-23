@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Negocio.Entities;
 
 
@@ -20,6 +21,12 @@ namespace Negocio.DataAccess.Contexts
         public DbSet<Ubicacion> Ubicacion { get; set; }
 
         public DbSet<EstadoOrden> EstadoOrden { get; set; }
+
+        public DbSet<OrdenCompra> OrdenCompra { get; set; }
+
+        public DbSet<Recepcion> Recepcion { get; set; }
+
+        
 
     }
 }

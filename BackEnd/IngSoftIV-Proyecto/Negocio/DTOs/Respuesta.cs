@@ -10,6 +10,7 @@ namespace Negocio.DTOs
     {
         public int Codigo { get; set; }
         public string Mensaje { get; set; } = string.Empty;
+        public int? IdGenerado { get; set; }
     }
 }
 

@@ -97,7 +97,6 @@ namespace Negocio.DataAccess.Repositories
             }
 
             return respuesta;
-
         }
 
 
@@ -112,7 +111,6 @@ namespace Negocio.DataAccess.Repositories
 
             try
             {
-
                 var mensajeSalida = new SqlParameter("@mensajeSalida", System.Data.SqlDbType.VarChar, 255) { Direction = System.Data.ParameterDirection.Output };
                 var codigoSalida = new SqlParameter("@idMensajeSalida", SqlDbType.Int) { Direction = ParameterDirection.Output };
 
@@ -126,7 +124,6 @@ namespace Negocio.DataAccess.Repositories
 
                 respuesta.Codigo = (int)codigoSalida.Value;
                 respuesta.Mensaje = mensajeSalida.Value.ToString();
-
             }
             catch (Exception ex)
             {
@@ -135,7 +132,6 @@ namespace Negocio.DataAccess.Repositories
             }
 
             return respuesta;
-
         }
 
 

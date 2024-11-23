@@ -1,12 +1,11 @@
 
 
-
 DROP PROCEDURE IF EXISTS SP_OrdenCompra_Select;
 GO
 
 
-
 CREATE PROCEDURE SP_OrdenCompra_Select
+    @idOrdenCompra INT = NULL,
     @estadoOrdenID INT = NULL,
     @proveedor VARCHAR(100) = NULL,
     @fechaOrden DATE = NULL
@@ -18,13 +17,15 @@ BEGIN
 
     BEGIN TRY
         
-        -- consulta con filtros
+        SET @idOrdenCompra = NULLIF(@idOrdenCompra,'');
         SET @estadoOrdenID = NULLIF(@estadoOrdenID,'');
+        SET @proveedor = NULLIF(@proveedor,'');
         SET @fechaOrden = NULLIF(@fechaOrden,'');
 
         SELECT idOrdenCompra, estadoOrdenID, proveedor, fechaOrden
         FROM OrdenCompra
-        WHERE (@estadoOrdenID IS NULL OR estadoOrdenID = @estadoOrdenID)
+        WHERE (@idOrdenCompra IS NULL OR idOrdenCompra = @idOrdenCompra)
+          AND (@estadoOrdenID IS NULL OR estadoOrdenID = @estadoOrdenID)
           AND (@proveedor IS NULL OR proveedor LIKE '%' + @proveedor + '%')
           AND (@fechaOrden IS NULL OR fechaOrden = @fechaOrden);
 
@@ -37,13 +38,15 @@ BEGIN
     END TRY
     BEGIN CATCH
 
-        DECLARE @mensajeError VARCHAR(500);
-        SET @mensajeError = ERROR_MESSAGE();
-
-        -- mensaje de error
-        SELECT @mensajeError AS Mensaje, -1 AS Código;
+        SET @mensajeSalida = ERROR_MESSAGE();
+        SET @idMensajeSalida = -1;
+        SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código;
 
     END CATCH;
-
 END;
 GO
+
+
+/*
+SELECT * FROM OrdenCompra;
+*/
