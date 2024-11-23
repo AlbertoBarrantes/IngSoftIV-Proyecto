@@ -26,7 +26,7 @@ namespace Negocio.DataAccess.Contexts
 
         public DbSet<Recepcion> Recepcion { get; set; }
 
-        
+        public DbSet<Almacenamiento> Almacenamiento { get; set; }
 
     }
 }

@@ -16,9 +16,9 @@ BEGIN
         -- Verifica si el id existe en Ubicacion
         IF NOT EXISTS (SELECT 1 FROM Ubicacion WHERE idUbicacion = @idUbicacion)
         BEGIN
+			ROLLBACK TRANSACTION;
             SET @mensajeSalida = 'No se encontró una ubicación con el ID proporcionado, no se ha eliminado ningún registro.';
             SET @idMensajeSalida = 1;
-			ROLLBACK TRANSACTION;
             RETURN;
         END
 

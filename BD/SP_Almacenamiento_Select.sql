@@ -1,13 +1,12 @@
 
 
-
 DROP PROCEDURE IF EXISTS SP_Almacenamiento_Select;
 GO
 
 
-
 CREATE PROCEDURE SP_Almacenamiento_Select
-    @ubicacionID INT = NULL,
+    @idAlmacenamiento INT = NULL,
+	@ubicacionID INT = NULL,
     @recepcionID INT = NULL,
     @cantidadAlmacenada INT = NULL
 AS
@@ -17,30 +16,39 @@ BEGIN
 
     BEGIN TRY
 
-        SET @ubicacionID = NULLIF(@ubicacionID,'');
-        SET @recepcionID = NULLIF(@recepcionID,'');
-        SET @cantidadAlmacenada = NULLIF(@cantidadAlmacenada,'');
+		SET @idAlmacenamiento = NULLIF(@idAlmacenamiento,'');
+		SET @ubicacionID = NULLIF(@ubicacionID,'');
+		SET @recepcionID = NULLIF(@recepcionID,'');
+		SET @cantidadAlmacenada = NULLIF(@cantidadAlmacenada,'');
 
         -- Consulta con filtros opcionales
         SELECT idAlmacenamiento, ubicacionID, recepcionID, cantidadAlmacenada
         FROM Almacenamiento
-        WHERE (@ubicacionID IS NULL OR ubicacionID = @ubicacionID)
+        WHERE (@idAlmacenamiento IS NULL OR idAlmacenamiento = @idAlmacenamiento)
+		  AND (@ubicacionID IS NULL OR ubicacionID = @ubicacionID)
           AND (@recepcionID IS NULL OR recepcionID = @recepcionID)
           AND (@cantidadAlmacenada IS NULL OR cantidadAlmacenada = @cantidadAlmacenada);
 
-        SET @mensajeSalida = 'Consulta realizada exitosamente.';
-        SET @idMensajeSalida = 0;
+		IF @@ROWCOUNT > 0
+		BEGIN
+			SET @mensajeSalida = 'Consulta realizada exitosamente.';
+			SET @idMensajeSalida = 0;
+		END
+		ELSE
+        BEGIN
+            SET @mensajeSalida = 'No se encontraron productos con los filtros indicados';
+            SET @idMensajeSalida = 1;
+        END
 
-        -- Mensaje de salida como resultado
         SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código;
 
     END TRY
     BEGIN CATCH
-        DECLARE @mensajeError VARCHAR(500);
-        SET @mensajeError = ERROR_MESSAGE();
+        
+		SET @mensajeSalida = ERROR_MESSAGE();
+        SET @idMensajeSalida = -1;
+        SELECT @mensajeSalida AS Mensaje, @idMensajeSalida AS Código;
 
-        -- Mensaje de error como resultado
-        SELECT @mensajeError AS Mensaje, -1 AS Código;
     END CATCH;
 END;
 GO

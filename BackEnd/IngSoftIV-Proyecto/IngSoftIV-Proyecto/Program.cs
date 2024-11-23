@@ -5,11 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
+
 
 // Contexto de la base de datos
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // Repositorios
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
@@ -17,9 +20,10 @@ builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
 builder.Services.AddScoped<IEstadoOrdenRepository, EstadoOrdenRepository>();
 builder.Services.AddScoped<IOrdenCompraRepository, OrdenCompraRepository>();
 builder.Services.AddScoped<IRecepcionRepository, RecepcionRepository>();
-
+builder.Services.AddScoped<IAlmacenamientoRepository, AlmacenamientoRepository>();
 
 builder.Services.AddControllers();
+
 
 // Configuración de CORS
 builder.Services.AddCors(options =>
@@ -30,11 +34,13 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
@@ -42,6 +48,7 @@ var app = builder.Build();
 //    app.UseSwagger();
 //    app.UseSwaggerUI();
 //}
+
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();

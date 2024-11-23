@@ -60,6 +60,10 @@ namespace IngSoftIV_Proyecto.Controllers
 
         }
 
+
+
+
+
         // PUT
         [HttpPut("{id}")]
         public async Task<ActionResult<Respuesta>> ActualizarRecepcion(int id, [FromBody] RecepcionRequest request)

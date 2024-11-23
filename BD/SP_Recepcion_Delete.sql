@@ -44,6 +44,6 @@ GO
 
 /*
 
-SELECT * FROM Recepcion;
+SELECT * FROM Producto;
 
 */

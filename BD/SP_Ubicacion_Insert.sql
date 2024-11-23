@@ -35,10 +35,11 @@ BEGIN
 
     END TRY
     BEGIN CATCH
-        ROLLBACK TRANSACTION;
-
+        
+		ROLLBACK TRANSACTION;
         SET @mensajeSalida = ERROR_MESSAGE();
         SET @idMensajeSalida = -1;
+
     END CATCH;
 END;
 GO

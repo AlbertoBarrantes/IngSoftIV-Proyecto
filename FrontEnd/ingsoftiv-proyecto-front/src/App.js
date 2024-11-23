@@ -1,8 +1,10 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import { fetchData, postData, putData, deleteData } from './Services/api';
-import EstadoOrdenForm from './components/EstadoOrdenForm';
-import EstadoOrdenList from './components/EstadoOrdenList';
+import ProductForm from './components/ProducForm';
+import ProductList from './components/ProductList';
+import OrderReceptionForm from './components/OrderReceptionForm';
+import StorageAssignment from './components/StorageAssignment';
+import ReceivedItemsList from './components/ReceivedItemsList';
 
 function App() {
   const [estadoOrdenes, setEstadoOrdenes] = useState([]);  // Estado para almacenar los datos de los estados de orden
