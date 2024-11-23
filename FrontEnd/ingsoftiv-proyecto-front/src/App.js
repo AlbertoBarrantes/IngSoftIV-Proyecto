@@ -1,62 +1,77 @@
-import React, { useState } from 'react';
-import ProductForm from './components/ProductForm';
-import ProductList from './components/ProductList';
-import OrderReceptionForm from './components/OrderReceptionForm';
-import StorageAssignment from './components/StorageAssignment';
-import ReceivedItemsList from './components/ReceivedItemsList';
+// src/App.js
+import React, { useState, useEffect } from 'react';
+import { fetchData, postData, putData, deleteData } from './Services/api';
+import EstadoOrdenForm from './components/EstadoOrdenForm';
+import EstadoOrdenList from './components/EstadoOrdenList';
 
-const App = () => {
-  const [products, setProducts] = useState([]);
-  const [receivedItems, setReceivedItems] = useState([]);
+function App() {
+  const [estadoOrdenes, setEstadoOrdenes] = useState([]);  // Estado para almacenar los datos de los estados de orden
+  const [selectedEstadoOrden, setSelectedEstadoOrden] = useState(null);  // Estado para almacenar el estado de orden seleccionado para editar
 
-  // Agregar un nuevo producto al catálogo
-  const handleAddProduct = (newProduct) => {
-    setProducts((prevProducts) => [...prevProducts, newProduct]);
+  // Cargar los estados de orden cuando el componente se monta
+  useEffect(() => {
+    const loadEstadoOrdenes = async () => {
+      try {
+        const data = await fetchData('estadoorden');
+        setEstadoOrdenes(data);  // Guardamos los datos obtenidos de la API
+      } catch (error) {
+        console.error("Error cargando los estados de orden:", error);
+      }
+    };
+    loadEstadoOrdenes();
+  }, []);  // El array vacío asegura que esta función solo se ejecute una vez al montar el componente
+
+  // Función para guardar o actualizar un estado de orden
+  const handleSaveEstadoOrden = async (data) => {
+    try {
+      if (selectedEstadoOrden) {
+        // Si ya hay un estado seleccionado, actualizamos
+        await putData(`estadoorden/${selectedEstadoOrden.idEstadoOrden}`, data);
+      } else {
+        // Si no hay estado seleccionado, creamos uno nuevo
+        await postData('estadoorden', data);
+      }
+      // Recargamos la lista de estados de orden después de guardar
+      const newEstadoOrdenes = await fetchData('estadoorden');
+      setEstadoOrdenes(newEstadoOrdenes);
+      setSelectedEstadoOrden(null);  // Reseteamos el estado de la orden seleccionada
+    } catch (error) {
+      console.error("Error guardando el estado de orden:", error);
+    }
   };
 
-  // Registrar la recepción de un producto
-  const handleReceive = (item) => {
-    setReceivedItems((prevItems) => [...prevItems, { ...item, location: null }]);
+  // Función para eliminar un estado de orden
+  const handleDeleteEstadoOrden = async (id) => {
+    try {
+      await deleteData(`estadoorden/${id}`);
+      const newEstadoOrdenes = await fetchData('estadoorden');
+      setEstadoOrdenes(newEstadoOrdenes);
+    } catch (error) {
+      console.error("Error eliminando el estado de orden:", error);
+    }
   };
 
-  // Asignar una ubicación a un producto recibido
-  const handleAssign = (item, location) => {
-    setReceivedItems((prevItems) =>
-      prevItems.map((i) => (i === item ? { ...i, location } : i))
-    );
+  // Función para seleccionar un estado de orden para editar
+  const handleEditEstadoOrden = (estadoOrden) => {
+    setSelectedEstadoOrden(estadoOrden);
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Gestión de Inventario</h1>
-
-      {/* Formulario para agregar nuevos productos */}
-      <h2>Agregar Producto al Catálogo</h2>
-      <ProductForm onSubmit={handleAddProduct} />
-
-      {/* Lista de productos del catálogo */}
-      <h2>Catálogo de Productos</h2>
-      <ProductList products={products} />
-
-      <hr />
-
-      {/* Recepción de mercancías */}
-      <h2>Recepción de Mercancías</h2>
-      <OrderReceptionForm onReceive={handleReceive} />
-
-      {/* Asignación de ubicaciones */}
-      <h2>Asignación de Ubicaciones</h2>
-      <StorageAssignment
-        items={receivedItems.filter((item) => !item.location)}
-        onAssign={handleAssign}
+    <div className="App">
+      {/* Componente para el formulario */}
+      <EstadoOrdenForm 
+        estadoOrden={selectedEstadoOrden} 
+        onSave={handleSaveEstadoOrden} 
       />
-
-      {/* Listado de productos recibidos */}
-      <h2>Productos Recibidos</h2>
-      <ReceivedItemsList receivedItems={receivedItems} />
+      
+      {/* Componente para mostrar la lista de estados de orden */}
+      <EstadoOrdenList 
+        estadoOrdenes={estadoOrdenes} 
+        onEdit={handleEditEstadoOrden} 
+        onDelete={handleDeleteEstadoOrden} 
+      />
     </div>
   );
-};
+}
 
 export default App;
-
