@@ -1,77 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { fetchData, postData, putData, deleteData } from './Services/api';
-import ProductForm from './components/ProducForm';
-import ProductList from './components/ProductList';
-import OrderReceptionForm from './components/OrderReceptionForm';
-import StorageAssignment from './components/StorageAssignment';
-import ReceivedItemsList from './components/ReceivedItemsList';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Sidebar from './components/Sidebar/Sidebar';
+import Inicio from './pages/Inicio/Inicio';
+import ProductoPage from './pages/GesProductos/ProductoPage';
+import UbicacionPage from './pages/GesUbicaciones/UbicacionPage';
+import './App.css';
 
 function App() {
-  const [estadoOrdenes, setEstadoOrdenes] = useState([]);  // Estado para almacenar los datos de los estados de orden
-  const [selectedEstadoOrden, setSelectedEstadoOrden] = useState(null);  // Estado para almacenar el estado de orden seleccionado para editar
-
-  // Cargar los estados de orden cuando el componente se monta
-  useEffect(() => {
-    const loadEstadoOrdenes = async () => {
-      try {
-        const data = await fetchData('estadoorden');
-        setEstadoOrdenes(data);  // Guardamos los datos obtenidos de la API
-      } catch (error) {
-        console.error("Error cargando los estados de orden:", error);
-      }
-    };
-    loadEstadoOrdenes();
-  }, []);  // El array vacío asegura que esta función solo se ejecute una vez al montar el componente
-
-  // Función para guardar o actualizar un estado de orden
-  const handleSaveEstadoOrden = async (data) => {
-    try {
-      if (selectedEstadoOrden) {
-        // Si ya hay un estado seleccionado, actualizamos
-        await putData(`estadoorden/${selectedEstadoOrden.idEstadoOrden}`, data);
-      } else {
-        // Si no hay estado seleccionado, creamos uno nuevo
-        await postData('estadoorden', data);
-      }
-      // Recargamos la lista de estados de orden después de guardar
-      const newEstadoOrdenes = await fetchData('estadoorden');
-      setEstadoOrdenes(newEstadoOrdenes);
-      setSelectedEstadoOrden(null);  // Reseteamos el estado de la orden seleccionada
-    } catch (error) {
-      console.error("Error guardando el estado de orden:", error);
-    }
-  };
-
-  // Función para eliminar un estado de orden
-  const handleDeleteEstadoOrden = async (id) => {
-    try {
-      await deleteData(`estadoorden/${id}`);
-      const newEstadoOrdenes = await fetchData('estadoorden');
-      setEstadoOrdenes(newEstadoOrdenes);
-    } catch (error) {
-      console.error("Error eliminando el estado de orden:", error);
-    }
-  };
-
-  // Función para seleccionar un estado de orden para editar
-  const handleEditEstadoOrden = (estadoOrden) => {
-    setSelectedEstadoOrden(estadoOrden);
-  };
-
   return (
-    <div className="App">
-      {/* Componente para el formulario */}
-      <EstadoOrdenForm 
-        estadoOrden={selectedEstadoOrden} 
-        onSave={handleSaveEstadoOrden} 
-      />
-      
-      {/* Componente para mostrar la lista de estados de orden */}
-      <EstadoOrdenList 
-        estadoOrdenes={estadoOrdenes} 
-        onEdit={handleEditEstadoOrden} 
-        onDelete={handleDeleteEstadoOrden} 
-      />
+    <div className="app">
+      <Sidebar />
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<Inicio />} />
+          <Route path="/gestionProductos" element={<ProductoPage />} />
+          <Route path="/gestionUbicaciones" element={<UbicacionPage />} />
+        </Routes>
+      </div>
     </div>
   );
 }

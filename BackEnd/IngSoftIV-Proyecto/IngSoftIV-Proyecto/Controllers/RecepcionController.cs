@@ -21,10 +21,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
         // GET
         [HttpGet]
-        public async Task<ActionResult<List<Recepcion>>> ConsultarRecepcion([FromQuery] int? id,
-                                                                            [FromQuery] int? productoID,
-                                                                            [FromQuery] int? ordenCompraID,
-                                                                            [FromQuery] DateTime? fechaRecepcion)
+        public async Task<ActionResult<List<Recepcion>>> ConsultarRecepcion([FromQuery] int? id, [FromQuery] int? productoID, [FromQuery] int? ordenCompraID, [FromQuery] DateTime? fechaRecepcion)
         {
             // Convierte el request en una entidad Recepcion
             var recepciones = await _recepcionRepository.ConsultarRecepcion(id, productoID, ordenCompraID, fechaRecepcion);

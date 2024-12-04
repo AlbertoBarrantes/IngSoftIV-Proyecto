@@ -1,6 +1,10 @@
 
 .sidebar {
     min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .bi {
@@ -57,3 +61,5 @@
 .lh-tight {
     line-height: 1.25;
 }
+
+

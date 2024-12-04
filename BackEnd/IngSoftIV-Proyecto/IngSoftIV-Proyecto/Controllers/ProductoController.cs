@@ -24,7 +24,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         // GET: api/Producto
-        [HttpGet("VerProducto")]
+        [HttpGet]
         public async Task<ActionResult<List<Producto>>> ObtenerProductos([FromQuery] string? codigoBarras, [FromQuery] string? descripcion)
         {
             // Convierte el request en una entidad Producto
@@ -38,7 +38,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         // Método POST
-        [HttpPost("InsertarProducto")]
+        [HttpPost]
         public async Task<ActionResult<Respuesta>> InsertarProducto([FromBody] ProductoRequest request)
         {
 
@@ -74,7 +74,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         // Método PUT
-        [HttpPut("ActualizarProducto")]
+        [HttpPut("{id}")]
         public async Task<ActionResult<Respuesta>> ActualizarProducto(int id, [FromBody] ProductoRequest request)
         {
 
@@ -107,7 +107,7 @@ namespace IngSoftIV_Proyecto.Controllers
         
 
        // Método DELETE
-       [HttpDelete("EliminarProducto")]
+       [HttpDelete("{id}")]
         public async Task<ActionResult<Respuesta>> EliminarProducto(int id)
         {
             // Llamada al repositorio para eliminar el producto

@@ -25,7 +25,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         // GET: api/<EstadoOrdenController>
-        [HttpGet("VerEstadoOrden")]
+        [HttpGet]
         public async Task<ActionResult<List<EstadoOrden>>> ObtenerEstadoOrden([FromQuery] string? nombre, [FromQuery] string? descripcion)
         {
             // Convierte el request en una entidad Producto
@@ -39,7 +39,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         // POST api/<EstadoOrdenController>
-        [HttpPost("InsertarEstadoOrden")]
+        [HttpPost]
         public async Task<ActionResult<Respuesta>> InsertarEstadoOrden([FromBody] EstadoOrdenRequest request)
         {
 
@@ -69,7 +69,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         // PUT api/<EstadoOrdenController>/5
-        [HttpPut("ActualizarEstadoOrden")]
+        [HttpPut("{id}")]
         public async Task<ActionResult<Respuesta>> ActualizarEstadoOrden([FromQuery] int id, [FromBody] EstadoOrdenRequest request)
         {
 
@@ -100,7 +100,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         // DELETE
-        [HttpDelete("EliminarEstadoOrden")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<Respuesta>> EliminarEstadoOrden([FromQuery] int id)
         {
             // Elimina el estado de la orden

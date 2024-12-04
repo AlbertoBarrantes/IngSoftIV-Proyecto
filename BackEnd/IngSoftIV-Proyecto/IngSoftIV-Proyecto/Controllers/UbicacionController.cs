@@ -23,7 +23,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         // GET: api/Ubicacion
-        [HttpGet("VerUbicacion")]
+        [HttpGet]
         public async Task<ActionResult<List<Ubicacion>>> ObtenerUbicaciones([FromQuery] int? productoID, [FromQuery] string? pasillo, [FromQuery] string? estante)
         {
             // Convierte el request en una entidad Ubicacion
@@ -38,7 +38,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         // Método POST
-        [HttpPost("InsertarUbicacion")]
+        [HttpPost]
         public async Task<ActionResult<Respuesta>> InsertarUbicacion([FromBody] UbicacionRequest request)
         {
 
@@ -68,7 +68,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         //Metodo PUT
-        [HttpPut("ActualizarUbicacion")]
+        [HttpPut("{id}")]
         public async Task<ActionResult<Respuesta>> ActualizarUbicacion(int id, [FromBody] UbicacionRequest request)
         {
             // Valida los datos usando las anotaciones de la clase UbicacionRequest
@@ -97,7 +97,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
         // Método DELETE
-        [HttpDelete("EliminarUbicacion")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<Respuesta>> EliminarUbicacion(int id)
         {
             // Elimina la entidad en la base de datos

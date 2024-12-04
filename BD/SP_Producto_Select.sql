@@ -19,7 +19,7 @@ BEGIN
         SET @descripcion = NULLIF(@descripcion, '');
 
         SELECT * FROM Producto
-        WHERE (codigoBarras = @codigoBarras OR @codigoBarras IS NULL)
+        WHERE (codigoBarras LIKE '%' + @codigoBarras + '%' OR @codigoBarras IS NULL)
           AND (descripcion LIKE '%' + @descripcion + '%' OR @descripcion IS NULL);
 
         IF @@ROWCOUNT > 0
