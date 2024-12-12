@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Negocio.DataAccess.Repositories;
 using Negocio.Entities;
 using Negocio.DTOs;
+using Negocio.Services;
 
 namespace IngSoftIV_Proyecto.Controllers
 {
@@ -12,11 +13,13 @@ namespace IngSoftIV_Proyecto.Controllers
     {
 
         private readonly IOrdenCompraRepository _ordenCompraRepository;
+        private readonly IEstadoOrdenRepository _estadoOrdenRepository;
 
         // Contructor
-        public OrdenCompraController(IOrdenCompraRepository ordenCompraRepository)
+        public OrdenCompraController(IOrdenCompraRepository ordenCompraRepository, IEstadoOrdenRepository estadoOrdenRepository)
         {
             _ordenCompraRepository = ordenCompraRepository;
+            _estadoOrdenRepository = estadoOrdenRepository;
         }
 
 
@@ -113,6 +116,41 @@ namespace IngSoftIV_Proyecto.Controllers
             return respuesta.Codigo == 0 ? Ok(respuesta) : BadRequest(respuesta);
 
         }
+
+
+
+
+
+        [HttpGet("ordenes")]
+        public async Task<IActionResult> ObtenerOrdenes([FromQuery] int? estadoOrdenID, [FromQuery] string? proveedor, [FromQuery] DateTime? fechaInicio, [FromQuery] DateTime? fechaFin)
+        {
+            // Obtener las órdenes desde el repositorio
+            var ordenes = await _ordenCompraRepository.ConsultarOrdenCompra(null, estadoOrdenID, proveedor, null);
+
+            // Convertir DateTime? a DateOnly
+            DateOnly? fechaInicioDateOnly = fechaInicio.HasValue ? DateOnly.FromDateTime(fechaInicio.Value) : null;
+            DateOnly? fechaFinDateOnly = fechaFin.HasValue ? DateOnly.FromDateTime(fechaFin.Value) : null;
+
+            // Filtrar por rango de fechas
+            if (fechaInicioDateOnly.HasValue && fechaFinDateOnly.HasValue)
+            {
+                ordenes = ordenes.Where(o => o.fechaOrden >= fechaInicioDateOnly && o.fechaOrden <= fechaFinDateOnly).ToList();
+            }
+
+            // Validar si hay resultados
+            if (!ordenes.Any())
+            {
+                return NotFound("No se encontraron órdenes con los filtros proporcionados.");
+            }
+
+            return Ok(ordenes);
+        }
+
+
+
+
+
+
 
     }
 }

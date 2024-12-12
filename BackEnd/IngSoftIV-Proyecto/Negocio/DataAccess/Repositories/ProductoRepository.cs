@@ -27,6 +27,13 @@ namespace Negocio.DataAccess.Repositories
 
         // XXX cambiar {0} por SQL parameter
 
+
+
+
+
+
+
+
         // Obtener productos filtrados
         public async Task<List<Producto>> ObtenerProductosFiltrados(string? codigoBarras, string? descripcion)
         {
@@ -165,6 +172,21 @@ namespace Negocio.DataAccess.Repositories
             return respuesta;
 
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }

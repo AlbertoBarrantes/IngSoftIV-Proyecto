@@ -10,6 +10,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using Negocio.Entities;
 using Negocio.DTOs;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Negocio.DataAccess.Repositories
 {
@@ -154,9 +155,17 @@ namespace Negocio.DataAccess.Repositories
                     productoID ?? (object)DBNull.Value,
                     pasillo ?? (object)DBNull.Value,
                     estante ?? (object)DBNull.Value
-                ).ToListAsync();
+                )
+                .ToListAsync();
 
                 return ubicaciones;
+
+                
+
+
+
+
+
             }
             catch (Exception ex)
             {

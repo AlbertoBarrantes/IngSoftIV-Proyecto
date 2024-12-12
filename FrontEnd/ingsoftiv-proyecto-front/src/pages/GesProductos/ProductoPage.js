@@ -21,9 +21,33 @@ const ProductoPage = () => {
         stock: 0,
     });
 
+    // Filtros
     const [codigoBarras, setCodigoBarras] = useState("");
     const [descripcion, setDescripcion] = useState("");
 
+    // Paginación
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = productos
+        .filter(
+            (prod) =>
+                prod.descripcion.toLowerCase().includes(search) ||
+                prod.codigoBarras.includes(search)
+        )
+        .slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(
+        productos.filter(
+            (prod) =>
+                prod.descripcion.toLowerCase().includes(search) ||
+                prod.codigoBarras.includes(search)
+        ).length / itemsPerPage
+    );
+
+
+
+
+    // Cargar productos
     useEffect(() => {
         fetchProductos();
     }, []);
@@ -31,6 +55,7 @@ const ProductoPage = () => {
 
 
 
+    // Obtener productos desde la API
     const fetchProductos = async () => {
         try {
             const response = await axios.get(`https://localhost:5555/api/Producto?codigoBarras=${codigoBarras}&descripcion=${descripcion}`);
@@ -44,6 +69,7 @@ const ProductoPage = () => {
 
 
 
+    // Manejar cambios en los inputs
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setProducto({ ...producto, [name]: value });
@@ -52,6 +78,7 @@ const ProductoPage = () => {
 
 
 
+    // Paginación
     const handlePreviousPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -61,6 +88,7 @@ const ProductoPage = () => {
 
 
 
+    // Paginación
     const handleNextPage = () => {
         const totalPages = Math.ceil(
             productos.filter(
@@ -77,6 +105,7 @@ const ProductoPage = () => {
 
 
 
+    // Paginación
     const handlePageClick = (page) => {
         setCurrentPage(page);
     };
@@ -84,15 +113,7 @@ const ProductoPage = () => {
 
 
 
-    const handleEdit = (prod) => {
-        setProducto(prod);
-        setIsEditing(true);
-        setShowModal(true);
-    };
-
-
-
-
+    // Enviar formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -122,6 +143,17 @@ const ProductoPage = () => {
 
 
 
+    // Editar producto
+    const handleEdit = (prod) => {
+        setProducto(prod);
+        setIsEditing(true);
+        setShowModal(true);
+    };
+
+
+
+
+    // Eliminar producto
     const handleDelete = async (id) => {
         if (window.confirm("¿Estás seguro de que deseas eliminar este producto?")) {
             try {
@@ -141,6 +173,7 @@ const ProductoPage = () => {
 
 
 
+    // Resetear formulario
     const resetForm = () => {
         setProducto({
             codigoBarras: "",
@@ -157,33 +190,11 @@ const ProductoPage = () => {
 
 
 
+    // Resetear filtros
     const resetFilter = () => {
         setCodigoBarras("");
         setDescripcion("");
     };
-
-
-
-
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = productos
-        .filter(
-            (prod) =>
-                prod.descripcion.toLowerCase().includes(search) ||
-                prod.codigoBarras.includes(search)
-        )
-        .slice(indexOfFirstItem, indexOfLastItem);
-
-
-
-    const totalPages = Math.ceil(
-        productos.filter(
-            (prod) =>
-                prod.descripcion.toLowerCase().includes(search) ||
-                prod.codigoBarras.includes(search)
-        ).length / itemsPerPage
-    );
 
 
 
@@ -202,7 +213,7 @@ const ProductoPage = () => {
                         setShowModal(true);
                     }}
                 >
-                    Agregar Nuevo
+                    Agregar Producto
                 </button>
 
                 <div className="row">

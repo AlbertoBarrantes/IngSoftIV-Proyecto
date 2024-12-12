@@ -104,10 +104,10 @@ namespace IngSoftIV_Proyecto.Controllers
 
 
 
-        
 
-       // Método DELETE
-       [HttpDelete("{id}")]
+
+        // Método DELETE
+        [HttpDelete("{id}")]
         public async Task<ActionResult<Respuesta>> EliminarProducto(int id)
         {
             // Llamada al repositorio para eliminar el producto
@@ -116,6 +116,9 @@ namespace IngSoftIV_Proyecto.Controllers
             // Devuelve el resultado basado en el código de respuesta
             return resultado.Codigo == 0 ? Ok(resultado) : BadRequest(resultado);
         }
+
+
+
 
 
     }

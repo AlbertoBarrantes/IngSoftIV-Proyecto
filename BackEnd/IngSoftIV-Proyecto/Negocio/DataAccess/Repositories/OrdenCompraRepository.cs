@@ -30,24 +30,54 @@ namespace Negocio.DataAccess.Repositories
         // Consultar
         public async Task<List<OrdenCompra>> ConsultarOrdenCompra(int? idOrdenCompra, int? estadoOrdenID, string? proveedor, DateOnly? fechaOrden)
         {
-            
             try
             {
+                
+                proveedor = proveedor?.Trim();
+
+                // Logs
+                Console.WriteLine($"Parámetros: id={idOrdenCompra}, estadoOrdenID={estadoOrdenID}, proveedor='{proveedor}', fechaOrden={fechaOrden}");
+
                 var ordenes = await _context.OrdenCompra.FromSqlRaw(
                     "EXEC SP_OrdenCompra_Select @idOrdenCompra = {0}, @estadoOrdenID = {1}, @proveedor = {2}, @fechaOrden = {3}",
                     idOrdenCompra ?? (object)DBNull.Value,
                     estadoOrdenID ?? (object)DBNull.Value,
                     proveedor ?? (object)DBNull.Value,
                     fechaOrden ?? (object)DBNull.Value
-                    ).ToListAsync();
+                ).ToListAsync();
+
                 return ordenes;
             }
-            catch 
-            { 
-                return new List<OrdenCompra>(); 
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al consultar órdenes: {ex.Message}");
+                return new List<OrdenCompra>();
             }
-
         }
+
+
+
+
+        //public async Task<List<OrdenCompra>> ConsultarOrdenCompra(int? idOrdenCompra, int? estadoOrdenID, string? proveedor, DateOnly? fechaOrden)
+        //{
+
+        //    try
+        //    {
+        //        var ordenes = await _context.OrdenCompra.FromSqlRaw(
+        //            "EXEC SP_OrdenCompra_Select @idOrdenCompra = {0}, @estadoOrdenID = {1}, @proveedor = {2}, @fechaOrden = {3}",
+        //            idOrdenCompra ?? (object)DBNull.Value,
+        //            estadoOrdenID ?? (object)DBNull.Value,
+        //            proveedor ?? (object)DBNull.Value,
+        //            fechaOrden ?? (object)DBNull.Value
+        //            ).ToListAsync();
+        //        return ordenes;
+        //    }
+        //    catch
+        //    {
+        //        return new List<OrdenCompra>();
+        //    }
+
+        //}
 
 
 

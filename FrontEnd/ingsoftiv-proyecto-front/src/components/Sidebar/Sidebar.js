@@ -28,49 +28,33 @@ const Sidebar = () => {
                         <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                             <li><Link to="/gestionProductos" className="text-light rounded btn-bg">Gestión de Productos</Link></li>
                             <li><Link to="/gestionUbicaciones" className="text-light rounded btn-bg">Gestión de Ubicaciones</Link></li>
-                            <li><Link to="#" className="text-light rounded btn-bg">Monthly</Link></li>
-                            <li><Link to="#" className="text-light rounded btn-bg">Annually</Link></li>
                         </ul>
                     </div>
                 </li>
 
                 <li>
-                    <Link to="#" className="nav-link text-white btn-bg">
+                    <Link to="/gestionOrdenesCompra" className="nav-link text-white btn-bg">
                         <i className="bi bi-table me-2"></i>
-                        Orders
+                        Ordenes de Compra
                     </Link>
                 </li>
 
-                <li>
-                    <Link to="#" className="nav-link text-white btn-bg">
-                        <i className="bi bi-grid me-2"></i>
-                        Products
-                    </Link>
-                </li>
+                
 
-                <li>
-                    <Link to="#" className="nav-link text-white btn-bg">
-                        <i className="bi bi-clipboard-data me-2"></i>
+                <li className="dropdown-item ps-1">
+                    <button className="btn btn-toggle align-items-center rounded text-white btn-bg" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse2" aria-expanded="false">
+                        <i className="bi bi-file-earmark-bar-graph me-2"></i>
                         Reportes
-                    </Link>
+                    </button>
+                    <div className="collapse" id="dashboard-collapse2">
+                        <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li><Link to="/ReporteOrdenesCompra" className="text-light rounded btn-bg">Reporte de Ordenes de Compra</Link></li>
+                        </ul>
+                    </div>
                 </li>
 
             </ul>
-            {/*<hr />
-            <div className="dropdown">
-                <Link to="#" className="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://github.com/mdo.png" alt="" width="32" height="32" className="rounded-circle me-2" />
-                    <strong>mdo</strong>
-                </Link>
-                <ul className="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                    <li><Link className="dropdown-item" to="#">New project...</Link></li>
-                    <li><Link className="dropdown-item" to="#">Settings</Link></li>
-                    <li><Link className="dropdown-item" to="#">Profile</Link></li>
-                    <li><hr className="dropdown-divider" /></li>
-                    <li><Link className="dropdown-item" to="#">Sign out</Link></li>
-                </ul>
-            </div>
-            */}
+            
         </div>
     );
 };

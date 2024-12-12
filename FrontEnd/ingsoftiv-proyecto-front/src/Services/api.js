@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:5000/api'; // Cambia esta URL según el puerto de tu API.
+const apiUrl = 'http://localhost:5555/api'; // Cambia esta URL según el puerto de tu API.
 
 const fetchData = async (endpoint) => {
   const response = await fetch(`${apiUrl}/${endpoint}`);

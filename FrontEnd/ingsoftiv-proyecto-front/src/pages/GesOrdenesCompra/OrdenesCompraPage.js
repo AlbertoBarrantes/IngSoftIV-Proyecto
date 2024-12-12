@@ -3,15 +3,15 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
-const UbicacionPage = () => {
+const OrdenesCompraPage = () => {
 
     // Estados
-    const [ubicaciones, setUbicaciones] = useState([]);
-    const [productos, setProductos] = useState([]);
-    const [ubicacion, setUbicacion] = useState({
-        productoID: "",
-        pasillo: "",
-        estante: "",
+    const [ordenesCompra, setOrdenesCompra] = useState([]);
+    const [estadoOrden, setEstadoOrden] = useState([]);
+    const [ordenCompra, setOrdenCompra] = useState({
+        estadoOrdenID: "",
+        proveedor: "",
+        fechaOrden: "",
     });
 
     // Modal
@@ -20,62 +20,69 @@ const UbicacionPage = () => {
 
     // Filtros
     const [search, setSearch] = useState("");
-    const [productoID, setProductoID] = useState("");
-    const [pasillo, setPasillo] = useState("");
-    const [estante, setEstante] = useState("");
+    const [idOrdenCompra, setIdOrdenCompra] = useState("");
+    const [estadoOrdenID, setEstadoOrdenID] = useState("");
+    const [proveedor, setProveedor] = useState("");
+    const [fechaOrden, setFechaOrden] = useState("");
 
     // Paginación
     const itemsPerPage = 6;
     const [currentPage, setCurrentPage] = useState(1);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = ubicaciones
+    const currentItems = ordenesCompra
         .filter(
-            (prod) =>
-                prod.pasillo.toLowerCase().includes(search) ||
-                prod.estante.toLowerCase().includes(search)
+            (ordenCompra) =>
+                ordenCompra.idOrdenCompra.toString().includes(search) ||
+                ordenCompra.estadoOrdenID.includes(search) ||
+                ordenCompra.proveedor.toLowerCase().includes(search) ||
+                ordenCompra.fechaOrden.includes(search)
         )
         .slice(indexOfFirstItem, indexOfLastItem);
 
     const totalPages = Math.ceil(
-        ubicaciones.filter(
-            (prod) =>
-                prod.pasillo.toLowerCase().includes(search) ||
-                prod.estante.toLowerCase().includes(search)
+        ordenesCompra.filter(
+            (ordenCompra) =>
+                ordenCompra.idOrdenCompra.toString().includes(search) ||
+                ordenCompra.estadoOrdenID.includes(search) ||
+                ordenCompra.proveedor.toLowerCase().includes(search) ||
+                ordenCompra.fechaOrden.includes(search)
         ).length / itemsPerPage
     );
 
 
-    // Cargar ubicaciones y productos
+
+
+    // Cargar las ordenes de compra y los estados de orden
     useEffect(() => {
-        fetchUbicaciones();
-        fetchProductos();
+        fetchOrdenesCompra();
+        fetchEstadoOrden();
     }, []);
 
 
 
 
-    // Obtener ubicaciones desde la API
-    const fetchUbicaciones = async () => {
+    // Obtiene las ordenes de compra desde la API
+    const fetchOrdenesCompra = async () => {
         try {
-            const response = await axios.get(`https://localhost:5555/api/Ubicacion?productoID=${productoID}&pasillo=${pasillo}&estante=${estante}`);
-            setUbicaciones(response.data);
+            const response = await axios.get(`https://localhost:5555/api/OrdenCompra?id=${idOrdenCompra}&estadoOrdenID=${estadoOrdenID}&proveedor=${proveedor}&fechaOrden=${fechaOrden}`);
+            setOrdenesCompra(response.data);
             setCurrentPage(1);
         } catch (error) {
-            console.error("Error al obtener ubicaciones:", error);
+            console.error("Error al obtener las ordenes de compra:", error);
         }
     };
 
 
 
 
-    // Obtener productos desde la API
-    const fetchProductos = async () => {
+    // Obtiene los estados de orden desde la API
+    const fetchEstadoOrden = async () => {
         try {
-            const response = await axios.get("https://localhost:5555/api/Producto");
-            setProductos(response.data);
+            const response = await axios.get(`https://localhost:5555/api/EstadoOrden`);
+            setEstadoOrden(response.data);
         } catch (error) {
-            console.error("Error al obtener productos:", error);
+            console.error("Error al obtener los estados de orden:", error);
         }
     };
 
@@ -95,10 +102,10 @@ const UbicacionPage = () => {
     // Paginación
     const handleNextPage = () => {
         const totalPages = Math.ceil(
-            productos.filter(
-                (prod) =>
-                    prod.descripcion.toLowerCase().includes(search) ||
-                    prod.codigoBarras.includes(search)
+            ordenesCompra.filter(
+                (ordenCompra) =>
+                    ordenCompra.descripcion.toLowerCase().includes(search) ||
+                    ordenCompra.codigoBarras.includes(search)
             ).length / itemsPerPage
         );
         if (currentPage < totalPages) {
@@ -117,62 +124,60 @@ const UbicacionPage = () => {
 
 
 
-    // Enviar formulario
+    // Enviar forumulario
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             if (isEditing) {
-                await axios.put(
-                    `https://localhost:5555/api/Ubicacion/${ubicacion.idUbicacion}`,
-                    ubicacion
-                );
+                await axios.put(`https://localhost:5555/api/OrdenCompra/${ordenCompra.idOrdenCompra}`, ordenCompra);
             } else {
-                await axios.post("https://localhost:5555/api/Ubicacion", ubicacion);
+                await axios.post(`https://localhost:5555/api/OrdenCompra`, ordenCompra);
             }
-            fetchUbicaciones();
+            fetchOrdenesCompra();
             setShowModal(false);
         } catch (error) {
             console.error(
-                `Error al ${isEditing ? "editar" : "crear"} ubicación:`,
-                error
-            );
+                `Error al ${isEditing ? "editar" : "crear"} la orden de compra:`,
+                error);
         }
     };
 
 
 
 
-    // Eliminar ubicación
-    const handleDelete = async (id) => {
-        if (window.confirm("¿Estás seguro de que deseas eliminar esta ubicación?")) {
-            try {
-                await axios.delete(`https://localhost:5555/api/Ubicacion/${id}`);
-                if (fetchUbicaciones()) {
-                    alert("Ubicación eliminada correctamente");
-                }
-                else {
-                    alert("No se pudo eliminar la ubicación");
-                }
+    // Editar orden de compra
+    const handleEdit = (ordenCompra) => {
+        setOrdenCompra(ordenCompra);
+        setIsEditing(true);
+        setShowModal(true);
+    };
 
+
+
+
+    // Eliminar orden de compra
+    const handleDelete = async (id) => {
+        if (window.confirm("¿Estás seguro de que deseas eliminar esta orden de compra?")) {
+            try {
+                await axios.delete(`https://localhost:5555/api/OrdenCompra/${id}`);
+                fetchOrdenesCompra();
             } catch (error) {
-                console.error("Error al eliminar ubicación:", error);
+                console.error("Error al eliminar la orden de compra:", error);
             }
         }
-    }
-
-
-
-
-    // Resetear filtros
-    const resetFilter = () => {
-        setProductoID("");
-        setPasillo("");
-        setEstante("");
     };
 
 
 
 
+    // Limpiar filtros
+    const resetFilter = () => {
+        setSearch("");
+        setIdOrdenCompra("");
+        setEstadoOrdenID("");
+        setProveedor("");
+        setFechaOrden("");
+    }
 
 
 
@@ -181,68 +186,57 @@ const UbicacionPage = () => {
 
     return (
         <div className="container mt-4">
-            <h4>Gestión de Ubicaciones</h4>
+            <h4>Gestión de Ordenes de Compra</h4>
 
-
+            {/* Agregar una nueva orden de compra y filtros de búsqueda */}
             <div className="d-flex justify-content-between my-3">
 
                 <button
                     className="btn btn-success me-3"
                     onClick={() => {
-                        setUbicacion({ productoID: "", pasillo: "", estante: "" });
+                        setOrdenCompra({ estadoOrdenID: "", proveedor: "", fechaOrden: "" });
                         setIsEditing(false);
                         setShowModal(true);
                     }}
                 >
-                    Agregar Ubicación
+                    Agregar Nueva Orden
                 </button>
 
                 <div className="row">
 
-                    <select
-                        className="form-control w-25 mx-1 col"
-                        value={productoID}
-                        onChange={(e) => {
-                            setProductoID(e.target.value)
-                        }}
-                    >
-                        <option value="">Seleccione un producto</option>
-                        {productos.map((prod) => (
-                            <option key={prod.idProducto} value={prod.idProducto}>
-                                {prod.descripcion}
-                            </option>
-                        ))}
-                    </select>
-
+                    {/* Input para filtrar proveedor */}
                     <input
                         type="text"
-                        id="Ipasillo"
-                        placeholder="Pasillo"
+                        id="Iproveedor"
+                        placeholder="Proveedor"
                         className="form-control w-25 mx-1 col"
-                        value={pasillo}
-                        onChange={(e) => { setPasillo(e.target.value) }}
-
+                        value={proveedor}
+                        onChange={(e) => setProveedor(e.target.value)}
                     />
 
+                    {/* Datepicker para filtrar fecha de orden */}
                     <input
-                        type="text"
-                        id="Iestante"
-                        placeholder="Estante"
+                        type="date"
+                        id="IfechaOrden"
                         className="form-control w-25 mx-1 col"
-                        value={estante}
-                        onChange={(e) => setEstante(e.target.value)}
+                        value={fechaOrden}
+                        onChange={(e) => setFechaOrden(e.target.value)}
                     />
 
-
+                    {/* Botón para buscar ordenes de compra */}
                     <button
                         className="btn btn-light border mx-1 col"
-                        onClick={fetchUbicaciones}
+                        onClick={fetchOrdenesCompra}
                     >
                         Buscar
                     </button>
+
+                    {/* Botón para limpiar filtros */}
                     <button
                         className="btn btn-light border mx-1 col-auto"
-                        onClick={resetFilter}
+                        onClick={() => {
+                            resetFilter();
+                        }}
                     >
                         <i class="bi bi-eraser"></i>
                     </button>
@@ -250,36 +244,27 @@ const UbicacionPage = () => {
 
             </div>
 
-
-
-
-
-
-
-
-
-
-            <table className="table table-striped">
+            {/* Tabla de ordenes de compra */}
+            <table className="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Producto</th>
-                        <th>Pasillo</th>
-                        <th>Estante</th>
+                        <th>Id Orden</th>
+                        <th>Id Estado</th>
+                        <th>Estado</th>
+                        <th>Proveedor</th>
+                        <th>Fecha</th>
                         <th className="d-flex justify-content-center">Opción</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {currentItems.map((ubi) => (
-                        <tr key={ubi.idUbicacion}>
-                            <td>{ubi.idUbicacion}</td>
+                    {currentItems.map((ordenCompra) => (
+                        <tr key={ordenCompra.idOrdenCompra}>
+                            <td>{ordenCompra.idOrdenCompra}</td>
+                            <td>{ordenCompra.estadoOrdenID}</td>
+                            <td>{estadoOrden.find((estado) => estado.idEstadoOrden === ordenCompra.estadoOrdenID)?.nombre}</td>
+                            <td>{ordenCompra.proveedor}</td>
+                            <td>{ordenCompra.fechaOrden}</td>
                             <td>
-                                {productos.find((prod) => prod.idProducto === ubi.productoID)?.descripcion}
-                            </td>
-                            <td>{ubi.pasillo}</td>
-                            <td>{ubi.estante}</td>
-                            <td>
-
                                 <div className="btn-group dropleft d-flex justify-content-center">
                                     <button
                                         className="btn p-0 border-0"
@@ -295,11 +280,7 @@ const UbicacionPage = () => {
                                         <li>
                                             <button
                                                 className="dropdown-item "
-                                                onClick={() => {
-                                                    setUbicacion(ubi);
-                                                    setIsEditing(true);
-                                                    setShowModal(true);
-                                                }}
+                                                onClick={() => handleEdit(ordenCompra)}
                                             >
                                                 <i className="bi bi-pencil-square me-1 text-warning"></i>
                                                 Editar
@@ -308,7 +289,7 @@ const UbicacionPage = () => {
                                         <li>
                                             <button
                                                 className="dropdown-item d-flex align-items-center"
-                                                onClick={() => handleDelete(ubi.idUbicacion)}
+                                                onClick={() => handleDelete(ordenCompra.idOrdenCompra)}
                                             >
                                                 <i className="bi bi-x-circle me-1 text-danger"></i>
                                                 Eliminar
@@ -316,23 +297,11 @@ const UbicacionPage = () => {
                                         </li>
                                     </ul>
                                 </div>
-
-
-
-
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-
-
-
-
-
-
-
-
 
 
             {/* Paginación */}
@@ -392,13 +361,14 @@ const UbicacionPage = () => {
 
 
 
+            {/* Modal para agregar/editar orden de compra */}
             {showModal && (
                 <div className="modal show d-block" tabIndex="-1">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">
-                                    {isEditing ? "Editar Ubicación" : "Agregar Ubicación"}
+                                    {isEditing ? "Editar Orden de Compra" : "Agregar Orden de Compra"}
                                 </h5>
                                 <button
                                     type="button"
@@ -409,53 +379,57 @@ const UbicacionPage = () => {
                             <div className="modal-body">
                                 <form onSubmit={handleSubmit}>
                                     <div className="mb-3">
-                                        <label>Producto</label>
+
+                                        {/* Select para elegir el estado de la orden */}
+                                        <label>Estado de la Orden</label>
                                         <select
                                             className="form-control"
-                                            value={ubicacion.productoID}
+                                            value={ordenCompra.estadoOrdenID}
                                             onChange={(e) =>
-                                                setUbicacion({
-                                                    ...ubicacion,
-                                                    productoID: e.target.value,
+                                                setOrdenCompra({
+                                                    ...ordenCompra,
+                                                    estadoOrdenID: e.target.value,
                                                 })
                                             }
                                             required
                                         >
-                                            <option value="">Seleccione un producto</option>
-                                            {productos.map((prod) => (
-                                                <option key={prod.idProducto} value={prod.idProducto}>
-                                                    {prod.descripcion}
+                                            <option value="">Seleccione un estado</option>
+                                            {estadoOrden.map((estado) => (
+                                                <option key={estado.idEstadoOrden} value={estado.idEstadoOrden}>
+                                                    {estado.nombre}
                                                 </option>
                                             ))}
                                         </select>
                                     </div>
                                     <div className="mb-3">
-                                        <label>Pasillo</label>
+                                        {/* Input para el proveedor */}
+                                        <label>Proveedor</label>
                                         <input
                                             type="text"
                                             className="form-control"
-                                            value={ubicacion.pasillo}
+                                            value={ordenCompra.proveedor}
                                             onChange={(e) =>
-                                                setUbicacion({ ...ubicacion, pasillo: e.target.value })
+                                                setOrdenCompra({ ...ordenCompra, proveedor: e.target.value })
                                             }
                                             required
                                         />
                                     </div>
                                     <div className="mb-3">
-                                        <label>Estante</label>
+                                        {/* Datepicker para la fecha de la orden */}
+                                        <label>Fecha de la Orden</label>
                                         <input
-                                            type="text"
+                                            type="date"
                                             className="form-control"
-                                            value={ubicacion.estante}
+                                            value={ordenCompra.fechaOrden}
                                             onChange={(e) =>
-                                                setUbicacion({ ...ubicacion, estante: e.target.value })
+                                                setOrdenCompra({ ...ordenCompra, fechaOrden: e.target.value })
                                             }
                                             required
                                         />
                                     </div>
                                     <div className="modal-footer">
                                         <button type="submit" className="btn btn-success">
-                                            {isEditing ? "Guardar Cambios" : "Agregar Ubicación"}
+                                            {isEditing ? "Guardar Cambios" : "Agregar Orden de Compra"}
                                         </button>
                                         <button
                                             type="button"
@@ -471,8 +445,25 @@ const UbicacionPage = () => {
                     </div>
                 </div>
             )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
     );
 };
 
-export default UbicacionPage;
+export default OrdenesCompraPage;

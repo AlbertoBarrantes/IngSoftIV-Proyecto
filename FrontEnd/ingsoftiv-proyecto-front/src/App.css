@@ -28,17 +28,9 @@ body {
 }
 
 .content {
-    flex: 1;
-    padding: 20px;
-    background-color: #f4f4f4;
-}
-
-
-
-.content {
-  margin-left: 200px;
+  flex: 1;
+  margin-left: 235px;
   padding: 20px;
-  background-color: #f4f4f4;
   background-color: #fff;
 }
 
