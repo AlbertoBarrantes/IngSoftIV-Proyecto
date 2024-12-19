@@ -19,10 +19,3 @@ namespace Negocio.DTOs
 
     }
 }
-
-
-// CREATE TABLE EstadoOrden (
-//	  idEstadoOrden INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-//    nombre VARCHAR(45) NOT NULL,
-//    descripcion VARCHAR(255) NOT NULL
-//);

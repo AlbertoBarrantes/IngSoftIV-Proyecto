@@ -19,6 +19,7 @@ const ReporteOrdenes = () => {
   // Cargar las órdenes y los estados de orden al iniciar
   useEffect(() => {
     fetchEstadoOrden();
+    fetchOrdenes();
   }, []);
 
   // Obtener datos del API (filtrado)

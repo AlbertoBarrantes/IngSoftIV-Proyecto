@@ -117,26 +117,21 @@ const ProductoPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            let response;
             if (isEditing) {
-                await axios.put(`https://localhost:5555/api/Producto/${producto.idProducto}`, producto);
-                if (fetchProductos()) {
-                    alert("Producto actualizado correctamente");
-                }
-                else {
-                    alert("No se pudo actualizar el producto");
-                }
+                response = await axios.put(`https://localhost:5555/api/Producto/${producto.idProducto}`, producto);
             } else {
-                await axios.post("https://localhost:5555/api/Producto", producto);
-                if (fetchProductos()) {
-                    alert("Producto agregado correctamente");
-                }
-                else {
-                    alert("No se pudo agregar el producto");
-                }
+                response = await axios.post("https://localhost:5555/api/Producto", producto);
             }
+            fetchProductos();
             setShowModal(false);
+            alert(response.data.mensaje);
         } catch (error) {
-            console.error("Error al enviar producto", error);
+            if (error.response.data.mensaje) {
+                alert(error.response.data.mensaje + '\nCódigo de error: ' + error.response.data.codigo);
+            } else {
+                alert("Error al procesar la solicitud", error); 
+            }
         }
     };
 
@@ -157,15 +152,17 @@ const ProductoPage = () => {
     const handleDelete = async (id) => {
         if (window.confirm("¿Estás seguro de que deseas eliminar este producto?")) {
             try {
-                await axios.delete(`https://localhost:5555/api/Producto/${id}`);
-                if (fetchProductos()) {
-                    alert("Producto eliminado correctamente");
-                }
-                else {
-                    alert("No se pudo eliminar el producto");
-                }
+                let response;
+                response = await axios.delete(`https://localhost:5555/api/Producto/${id}`);
+                alert(response.data.mensaje);
             } catch (error) {
-                console.error("Error al eliminar producto", error);
+                if (error.response.data.mensaje) {
+                    alert(error.response.data.mensaje + '\nCódigo de error: ' + error.response.data.codigo);
+                } else {
+                    alert("Error al procesar la solicitud", error); 
+                }
+            } finally {
+                fetchProductos();
             }
         }
     };

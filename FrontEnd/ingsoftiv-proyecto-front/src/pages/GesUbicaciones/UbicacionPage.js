@@ -200,7 +200,7 @@ const UbicacionPage = () => {
                 <div className="row">
 
                     <select
-                        className="form-control w-25 mx-1 col"
+                        className="form-select w-25 mx-1 col"
                         value={productoID}
                         onChange={(e) => {
                             setProductoID(e.target.value)

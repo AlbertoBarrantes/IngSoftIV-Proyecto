@@ -28,13 +28,3 @@ namespace Negocio.Entities
 
     }
 }
-
-
-//CREATE TABLE Almacenamiento (
-//	idAlmacenamiento INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-//    ubicacionID INT NOT NULL,
-//    recepcionID INT NOT NULL,
-//    cantidadAlmacenada INT NOT NULL,
-//    FOREIGN KEY (ubicacionID) REFERENCES Ubicacion(idUbicacion) ON DELETE CASCADE,
-//    FOREIGN KEY (recepcionID) REFERENCES  Recepcion(idRecepcion) ON DELETE CASCADE
-//);

@@ -26,13 +26,3 @@ namespace Negocio.Entities
     }
 }
 
-
-//CREATE TABLE Recepcion (
-//	  idRecepcion INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-//    productoID INT NOT NULL,
-//    ordenCompraID INT NOT NULL,
-//    cantidad INT NOT NULL,
-//    fechaRecepcion DATE NOT NULL,
-//    FOREIGN KEY (productoID) REFERENCES Producto(idProducto) ON DELETE CASCADE,
-//    FOREIGN KEY (ordenCompraID) REFERENCES OrdenCompra(idOrdenCompra) ON DELETE CASCADE
-//);

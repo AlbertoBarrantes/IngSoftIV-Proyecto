@@ -70,7 +70,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
         // PUT api/<EstadoOrdenController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<Respuesta>> ActualizarEstadoOrden([FromQuery] int id, [FromBody] EstadoOrdenRequest request)
+        public async Task<ActionResult<Respuesta>> ActualizarEstadoOrden(int id, [FromBody] EstadoOrdenRequest request)
         {
 
             // Valida los datos usando las anotaciones de la clase EstadoOrdenRequest
@@ -101,7 +101,7 @@ namespace IngSoftIV_Proyecto.Controllers
 
         // DELETE
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Respuesta>> EliminarEstadoOrden([FromQuery] int id)
+        public async Task<ActionResult<Respuesta>> EliminarEstadoOrden(int id)
         {
             // Elimina el estado de la orden
             var respuesta = await _estadoOrdenRepository.EliminarEstadoOrden(id);

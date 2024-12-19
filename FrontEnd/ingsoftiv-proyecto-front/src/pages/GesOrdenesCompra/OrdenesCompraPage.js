@@ -186,7 +186,7 @@ const OrdenesCompraPage = () => {
 
     return (
         <div className="container mt-4">
-            <h4>Gestión de Ordenes de Compra</h4>
+            <h4>Historial de Ordenes de Compra</h4>
 
             {/* Agregar una nueva orden de compra y filtros de búsqueda */}
             <div className="d-flex justify-content-between my-3">

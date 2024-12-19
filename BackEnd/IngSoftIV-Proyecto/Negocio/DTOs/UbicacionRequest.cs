@@ -25,13 +25,3 @@ namespace Negocio.DTOs
     }
 }
 
-
-// Tabla Ubicacion
-//    idUbicacion INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-//    productoID INT NOT NULL,
-//    pasillo VARCHAR(45) NOT NULL,
-//    estante VARCHAR(45) NOT NULL,
-//    FOREIGN KEY (productoID) REFERENCES Producto(idProducto)
-
-// [Required(ErrorMessage = "XXX es obligatorio")]
-// [MaxLength(45, ErrorMessage = "XXX no puede exceder los XXX caracteres.")]

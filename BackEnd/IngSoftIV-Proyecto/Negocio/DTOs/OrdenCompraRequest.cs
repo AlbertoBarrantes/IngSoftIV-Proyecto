@@ -24,11 +24,3 @@ namespace Negocio.DTOs
     }
 }
 
-
-//CREATE TABLE OrdenCompra (
-//	  idOrdenCompra INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-//    estadoOrdenID INT NOT NULL,
-//    proveedor VARCHAR(100) NOT NULL,
-//    fechaOrden DATE NOT NULL,
-//    FOREIGN KEY (estadoOrdenID) REFERENCES EstadoOrden(idEstadoOrden) ON DELETE CASCADE
-//);

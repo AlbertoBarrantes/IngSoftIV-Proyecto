@@ -14,10 +14,8 @@ namespace Negocio.DataAccess.Repositories
     public class OrdenCompraRepository : IOrdenCompraRepository
     {
 
-        // XXX
         private readonly AppDbContext _context;
 
-        // XXX
         public OrdenCompraRepository(AppDbContext context)
         {
             _context = context;
@@ -54,30 +52,6 @@ namespace Negocio.DataAccess.Repositories
                 return new List<OrdenCompra>();
             }
         }
-
-
-
-
-        //public async Task<List<OrdenCompra>> ConsultarOrdenCompra(int? idOrdenCompra, int? estadoOrdenID, string? proveedor, DateOnly? fechaOrden)
-        //{
-
-        //    try
-        //    {
-        //        var ordenes = await _context.OrdenCompra.FromSqlRaw(
-        //            "EXEC SP_OrdenCompra_Select @idOrdenCompra = {0}, @estadoOrdenID = {1}, @proveedor = {2}, @fechaOrden = {3}",
-        //            idOrdenCompra ?? (object)DBNull.Value,
-        //            estadoOrdenID ?? (object)DBNull.Value,
-        //            proveedor ?? (object)DBNull.Value,
-        //            fechaOrden ?? (object)DBNull.Value
-        //            ).ToListAsync();
-        //        return ordenes;
-        //    }
-        //    catch
-        //    {
-        //        return new List<OrdenCompra>();
-        //    }
-
-        //}
 
 
 

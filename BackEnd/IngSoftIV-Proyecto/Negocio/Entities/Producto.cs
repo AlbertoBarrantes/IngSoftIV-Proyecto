@@ -46,13 +46,3 @@ namespace Negocio.Entities
         public int stock { get; set; }
     }
 }
-
-// Tabla Producto
-// idProducto   int
-// codigoBarras varchar(45)
-// descripcion  varchar(255)
-// unidadMedida varchar(45)
-// peso         decimal(10,2)
-// dimension    varchar(45)
-// numeroLote   varchar(45)
-// stock        int
